@@ -1,0 +1,132 @@
+import React, { useRef, useEffect } from 'react'
+import { HandTrackerProvider, useHandTracker } from '@theforce/react'
+import './App.css'
+
+function HandTrackingDemo() {
+  const { handLandmarks, isTracking, initialize, stop } = useHandTracker()
+  const videoRef = useRef(null)
+  const [stream, setStream] = React.useState(null)
+
+  useEffect(() => {
+    if (videoRef.current && !isTracking) {
+      initializeCamera()
+    }
+  }, [])
+
+  const initializeCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+          facingMode: 'user'
+        }
+      })
+      videoRef.current.srcObject = mediaStream
+      setStream(mediaStream)
+    } catch (error) {
+      console.error('Error accessing camera:', error)
+      alert('Unable to access camera. Please check permissions.')
+    }
+  }
+
+  const startTracking = async () => {
+    if (videoRef.current && stream) {
+      await initialize(videoRef.current)
+    }
+  }
+
+  const stopTracking = async () => {
+    await stop()
+  }
+
+  const cleanup = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop())
+    }
+  }
+
+  useEffect(() => {
+    return cleanup
+  }, [stream])
+
+  return (
+    <div className="app">
+      <div className="container">
+        <h1>🎯 TheForce React - Hand Tracking</h1>
+        
+        <div className={`status ${isTracking ? 'tracking' : 'stopped'}`}>
+          Status: {isTracking ? `Tracking (${handLandmarks.length} hands)` : 'Stopped'}
+        </div>
+
+        <div className="video-container">
+          <video 
+            ref={videoRef} 
+            autoPlay 
+            muted 
+            playsInline
+            className="video"
+          />
+        </div>
+
+        <div className="controls">
+          <button 
+            className="start-btn" 
+            onClick={startTracking}
+            disabled={isTracking || !stream}
+          >
+            Start Tracking
+          </button>
+          <button 
+            className="stop-btn" 
+            onClick={stopTracking}
+            disabled={!isTracking}
+          >
+            Stop Tracking
+          </button>
+        </div>
+
+        <div className="hoverable-demo">
+          <div className="hoverable-item" data-hoverable="true">
+            <h3>Button 1</h3>
+            <p>Hover with your hand</p>
+          </div>
+          <div className="hoverable-item" data-hoverable="true">
+            <h3>Button 2</h3>
+            <p>Point your index finger</p>
+          </div>
+          <div className="hoverable-item" data-hoverable="true">
+            <h3>Button 3</h3>
+            <p>Try different gestures</p>
+          </div>
+          <div className="hoverable-item" data-hoverable="true">
+            <h3>Button 4</h3>
+            <p>Virtual mouse control</p>
+          </div>
+        </div>
+
+        <div className="info">
+          <h3>How to use:</h3>
+          <ul>
+            <li>Allow camera access when prompted</li>
+            <li>Click "Start Tracking" to begin hand tracking</li>
+            <li>Point your index finger at the screen to control the virtual cursor</li>
+            <li>Hover over the buttons above to see them highlight</li>
+            <li>Hold your finger steady for 2 seconds to trigger hover events</li>
+            <li>Click "Stop Tracking" to end the session</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <HandTrackerProvider>
+      <HandTrackingDemo />
+    </HandTrackerProvider>
+  )
+}
+
+export default App 

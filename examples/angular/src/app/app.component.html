@@ -1,0 +1,67 @@
+<div class="app">
+  <div class="container">
+    <h1>🎯 TheForce Angular - Hand Tracking</h1>
+    
+    <div [class]="['status', isTracking ? 'tracking' : 'stopped']">
+      Status: {{ isTracking ? 'Tracking (' + handLandmarks.length + ' hands)' : 'Stopped' }}
+    </div>
+
+    <div class="video-container">
+      <video 
+        #videoElement
+        autoplay 
+        muted 
+        playsinline
+        class="video"
+      ></video>
+    </div>
+
+    <div class="controls">
+      <button 
+        class="start-btn" 
+        (click)="startTracking()"
+        [disabled]="isTracking || !stream"
+      >
+        Start Tracking
+      </button>
+      <button 
+        class="stop-btn" 
+        (click)="stopTracking()"
+        [disabled]="!isTracking"
+      >
+        Stop Tracking
+      </button>
+    </div>
+
+    <div class="hoverable-demo">
+      <div class="hoverable-item" data-hoverable="true">
+        <h3>Button 1</h3>
+        <p>Hover with your hand</p>
+      </div>
+      <div class="hoverable-item" data-hoverable="true">
+        <h3>Button 2</h3>
+        <p>Point your index finger</p>
+      </div>
+      <div class="hoverable-item" data-hoverable="true">
+        <h3>Button 3</h3>
+        <p>Try different gestures</p>
+      </div>
+      <div class="hoverable-item" data-hoverable="true">
+        <h3>Button 4</h3>
+        <p>Virtual mouse control</p>
+      </div>
+    </div>
+
+    <div class="info">
+      <h3>How to use:</h3>
+      <ul>
+        <li>Allow camera access when prompted</li>
+        <li>Click "Start Tracking" to begin hand tracking</li>
+        <li>Point your index finger at the screen to control the virtual cursor</li>
+        <li>Hover over the buttons above to see them highlight</li>
+        <li>Hold your finger steady for 2 seconds to trigger hover events</li>
+        <li>Click "Stop Tracking" to end the session</li>
+      </ul>
+    </div>
+  </div>
+</div> 

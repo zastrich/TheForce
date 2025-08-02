@@ -1,0 +1,39 @@
+{
+  "name": "theforce-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build && changeset publish"
+  },
+  "keywords": [
+    "mediapipe",
+    "hand-tracking",
+    "virtual-mouse",
+    "gesture-control",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "author": "Zastrich <zas@code200.com.br>",
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.26.2",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^14.0.0",
+    "@types/node": "^20.4.5",
+    "@vue/test-utils": "^2.4.6",
+    "jest-util": "^30.0.5",
+    "prettier": "^3.0.2",
+    "turbo": "^1.10.12"
+  }
+}

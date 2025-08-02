@@ -1,0 +1,35 @@
+{
+  "name": "@theforce/vue",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --external vue",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts --external vue",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@theforce/core": "*"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "eslint": "^8.45.0",
+    "eslint-config-custom": "*",
+    "jest": "^29.6.2",
+    "jest-environment-jsdom": "^29.6.2",
+    "tsup": "^7.1.0",
+    "typescript": "^5.1.6",
+    "vue": "^3.3.4"
+  },
+  "peerDependencies": {
+    "vue": ">=3.0.0"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@theforce/core",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts --external react",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@mediapipe/camera_utils": "^0.3.1634603088",
+    "@mediapipe/drawing_utils": "^0.3.1634603088",
+    "@mediapipe/hands": "^0.4.1657299676"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "eslint": "^8.45.0",
+    "eslint-config-custom": "*",
+    "jest": "^29.6.2",
+    "jest-environment-jsdom": "^29.6.2",
+    "tsup": "^7.1.0",
+    "typescript": "^5.1.6"
+  }
+}
