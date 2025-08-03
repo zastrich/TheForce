@@ -1,6 +1,18 @@
 {
   "name": "@theforce/vue",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Vue library for TheForce hand tracking",
+  "keywords": [
+    "theforce",
+    "hand-tracking",
+    "mediapipe",
+    "vue",
+    "gesture-control",
+    "virtual-mouse"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

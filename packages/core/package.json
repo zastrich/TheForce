@@ -1,6 +1,20 @@
 {
   "name": "@theforce/core",
   "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Core library for TheForce hand tracking",
+  "keywords": [
+    "theforce",
+    "hand-tracking",
+    "mediapipe",
+    "react",
+    "vue",
+    "angular",
+    "gesture-control",
+    "virtual-mouse"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
