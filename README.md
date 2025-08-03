@@ -398,7 +398,7 @@ If you discover a security vulnerability, please:
 
 ## Support
 
-- 📖 [Documentation](HERE)
+- 📖 [Documentation](https://theforce.code200.com.br)
 - 🐛 [Issue Tracker](https://github.com/zastrich/TheForce/issues)
 - 💬 [Discussions](https://github.com/zastrich/TheForce/discussions)
 - 📧 [Email Support](mailto:zas@code200.com.br)

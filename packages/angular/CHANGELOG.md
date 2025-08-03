@@ -1,5 +1,16 @@
 # @theforce/angular
 
+## 1.2.0
+
+### Minor Changes
+
+- Include docs
+
+### Patch Changes
+
+- Updated dependencies
+  - @theforce/core@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes

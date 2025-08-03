@@ -1,5 +1,11 @@
 # @theforce/core
 
+## 1.2.0
+
+### Minor Changes
+
+- Include docs
+
 ## 1.1.0
 
 ### Minor Changes
