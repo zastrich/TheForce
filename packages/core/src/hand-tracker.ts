@@ -16,7 +16,9 @@ export class HandTracker {
 
   constructor(config: HandTrackerConfig = {}) {
     this.config = {
-      hoverDelay: 1000,
+      hoverDelay: 2000,
+      sensitivityX: 1,
+      sensitivityY: 1,
       ...config
     };
     
@@ -59,8 +61,8 @@ export class HandTracker {
 
     const indexFinger = landmarks[8]; // Index finger tip
     if (indexFinger) {
-      const x = indexFinger.x * window.innerWidth;
-      const y = indexFinger.y * window.innerHeight;
+      const x = (1 - indexFinger.x) * window.innerWidth * (this.config.sensitivityX || 1);
+      const y = indexFinger.y * window.innerHeight * (this.config.sensitivityY || 1);
 
       this.cursorElement.style.left = `${x}px`;
       this.cursorElement.style.top = `${y}px`;
@@ -74,8 +76,8 @@ export class HandTracker {
     const indexFinger = landmarks[8];
     if (!indexFinger) return;
 
-    const x = indexFinger.x * window.innerWidth;
-    const y = indexFinger.y * window.innerHeight;
+    const x = (1 - indexFinger.x) * window.innerWidth * (this.config.sensitivityX || 1);
+    const y = indexFinger.y * window.innerHeight * (this.config.sensitivityY || 1);
 
     const element = document.elementFromPoint(x, y) as HTMLElement;
     const hoverableElement = element?.closest('[data-hoverable]') as HTMLElement;
@@ -91,19 +93,28 @@ export class HandTracker {
     this.hoveredElement = element;
     element.classList.add('force-hover');
 
+    if (this.cursorElement) {
+      this.cursorElement.classList.add('force-loading');
+      this.cursorElement.style.setProperty('--hover-delay', `${this.config.hoverDelay || 2000}ms`);
+    }
+
     if (this.hoverTimeout) {
       clearTimeout(this.hoverTimeout);
     }
 
     this.hoverTimeout = setTimeout(() => {
       this.triggerClick(element);
-    }, this.config.hoverDelay || 1000);
+    }, this.config.hoverDelay || 2000);
   }
 
   private handleHoverEnd(): void {
     if (this.hoveredElement) {
       this.hoveredElement.classList.remove('force-hover');
       this.hoveredElement = null;
+    }
+
+    if (this.cursorElement) {
+      this.cursorElement.classList.remove('force-loading');
     }
 
     if (this.hoverTimeout) {
@@ -136,6 +147,40 @@ export class HandTracker {
     this.cursorElement.style.backgroundColor = 'red';
     this.cursorElement.style.opacity = '0.7';
     this.cursorElement.style.transform = 'translate(-50%, -50%)';
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .force-cursor {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: red;
+        opacity: 0.7;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: transform 0.2s ease-out;
+      }
+      .force-cursor.force-loading::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 5px solid rgba(0, 0, 255, 0.5);
+        border-top-color: blue;
+        animation: force-spin var(--hover-delay, 2s) linear forwards;
+      }
+      @keyframes force-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    `;
+    document.head.appendChild(style);
 
     if (this.config.cursorImageUrl) {
       this.cursorElement.style.backgroundImage = `url(${this.config.cursorImageUrl})`;

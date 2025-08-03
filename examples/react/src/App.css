@@ -142,8 +142,12 @@ button:disabled {
   transform: translateY(-2px);
 }
 
-.hoverable-item.hovered {
-  background: #4CAF50;
+.hoverable-item.force-hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.hoverable-item.clicked {
+  background: #45a049;
   color: white;
-  border-color: #45a049;
 } 

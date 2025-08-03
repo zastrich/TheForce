@@ -183,8 +183,10 @@ npm start
 ## Configuration Options
 
 | Option | Type | Default | Description |
-|--------|------|---------|-------------|
+|---|---|---|---|
 | `hoverDelay` | number | 2000 | Time in milliseconds to hover before triggering click |
+| `sensitivityX` | number | 1 | Multiplier for horizontal cursor movement sensitivity |
+| `sensitivityY` | number | 1 | Multiplier for vertical cursor movement sensitivity |
 | `cursorImageUrl` | string | - | URL for custom cursor image |
 | `actionImageUrl` | string | - | URL for action indicator image |
 
@@ -391,15 +393,15 @@ We welcome feature requests! Please:
 If you discover a security vulnerability, please:
 
 1. **Do not** open a public issue
-2. Email us at [security@theforce.dev](mailto:security@theforce.dev)
+2. Email us at [zas@code200.com.br](mailto:zas@code200.com.br)
 3. We will respond within 48 hours
 
 ## Support
 
-- 📖 [Documentation](https://theforce.dev/docs)
+- 📖 [Documentation](HERE)
 - 🐛 [Issue Tracker](https://github.com/zastrich/TheForce/issues)
 - 💬 [Discussions](https://github.com/zastrich/TheForce/discussions)
-- 📧 [Email Support](mailto:support@theforce.dev)
+- 📧 [Email Support](mailto:zas@code200.com.br)
 
 ## Acknowledgments
 

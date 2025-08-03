@@ -46,6 +46,13 @@ function HandTrackingDemo() {
     }
   }
 
+  const handleClick = (event) => {
+    event.target.classList.add('clicked')
+    setTimeout(() => {
+      event.target.classList.remove('clicked')
+    }, 5000)
+  }
+
   useEffect(() => {
     return cleanup
   }, [stream])
@@ -81,25 +88,26 @@ function HandTrackingDemo() {
             className="stop-btn" 
             onClick={stopTracking}
             disabled={!isTracking}
+            data-hoverable="true"
           >
             Stop Tracking
           </button>
         </div>
 
         <div className="hoverable-demo">
-          <div className="hoverable-item" data-hoverable="true">
+          <div className="hoverable-item" data-hoverable="true" onClick={handleClick}>
             <h3>Button 1</h3>
             <p>Hover with your hand</p>
           </div>
-          <div className="hoverable-item" data-hoverable="true">
+          <div className="hoverable-item" data-hoverable="true" onClick={handleClick}>
             <h3>Button 2</h3>
             <p>Point your index finger</p>
           </div>
-          <div className="hoverable-item" data-hoverable="true">
+          <div className="hoverable-item" data-hoverable="true" onClick={handleClick}>
             <h3>Button 3</h3>
-            <p>Try different gestures</p>
+            <p>Try moving to other buttons</p>
           </div>
-          <div className="hoverable-item" data-hoverable="true">
+          <div className="hoverable-item" data-hoverable="true" onClick={handleClick}>
             <h3>Button 4</h3>
             <p>Virtual mouse control</p>
           </div>
@@ -122,11 +130,17 @@ function HandTrackingDemo() {
 }
 
 function App() {
+  const config = {
+    hoverDelay: 2000,
+    sensitivityX: 1.5,
+    sensitivityY: 1.5,
+  };
+
   return (
-    <HandTrackerProvider>
+    <HandTrackerProvider config={config}>
       <HandTrackingDemo />
     </HandTrackerProvider>
-  )
+  );
 }
 
 export default App 

@@ -29,25 +29,26 @@
           class="stop-btn" 
           @click="stopTracking"
           :disabled="!isTracking"
+          data-hoverable="true"
         >
           Stop Tracking
         </button>
       </div>
 
       <div class="hoverable-demo">
-        <Hoverable class="hoverable-item">
+        <Hoverable class="hoverable-item" @click="handleClick">
           <h3>Button 1</h3>
           <p>Hover with your hand</p>
         </Hoverable>
-        <Hoverable class="hoverable-item">
+        <Hoverable class="hoverable-item" @click="handleClick">
           <h3>Button 2</h3>
           <p>Point your index finger</p>
         </Hoverable>
-        <Hoverable class="hoverable-item">
+        <Hoverable class="hoverable-item" @click="handleClick">
           <h3>Button 3</h3>
           <p>Try different gestures</p>
         </Hoverable>
-        <Hoverable class="hoverable-item">
+        <Hoverable class="hoverable-item" @click="handleClick">
           <h3>Button 4</h3>
           <p>Virtual mouse control</p>
         </Hoverable>
@@ -69,20 +70,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useHandTracker, Hoverable } from '@theforce/vue'
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useHandTracker, Hoverable } from '@theforce/vue';
 
-const { handLandmarks, isTracking, initialize, stop } = useHandTracker()
-const videoRef = ref(null)
-const stream = ref(null)
+const config = {
+  hoverDelay: 2000,
+  sensitivityX: 1.5,
+  sensitivityY: 1.5,
+};
+
+const { handLandmarks, isTracking, initialize, stop } = useHandTracker(config);
+const videoRef = ref(null);
+const stream = ref(null);
 
 onMounted(async () => {
-  await initializeCamera()
-})
+  await initializeCamera();
+});
 
 onUnmounted(() => {
-  cleanup()
-})
+  cleanup();
+});
 
 const initializeCamera = async () => {
   try {
@@ -90,32 +97,39 @@ const initializeCamera = async () => {
       video: {
         width: { ideal: 640 },
         height: { ideal: 480 },
-        facingMode: 'user'
-      }
-    })
-    videoRef.value.srcObject = mediaStream
-    stream.value = mediaStream
+        facingMode: 'user',
+      },
+    });
+    videoRef.value.srcObject = mediaStream;
+    stream.value = mediaStream;
   } catch (error) {
-    console.error('Error accessing camera:', error)
-    alert('Unable to access camera. Please check permissions.')
+    console.error('Error accessing camera:', error);
+    alert('Unable to access camera. Please check permissions.');
   }
-}
+};
 
 const startTracking = async () => {
   if (videoRef.value && stream.value) {
-    await initialize(videoRef.value)
+    await initialize(videoRef.value);
   }
-}
+};
 
 const stopTracking = async () => {
-  await stop()
-}
+  await stop();
+};
 
 const cleanup = () => {
   if (stream.value) {
-    stream.value.getTracks().forEach(track => track.stop())
+    stream.value.getTracks().forEach((track) => track.stop());
   }
-}
+};
+
+const handleClick = (event) => {
+  event.target.classList.add('clicked');
+  setTimeout(() => {
+    event.target.classList.remove('clicked');
+  }, 5000);
+};
 </script>
 
 <style scoped>
@@ -263,9 +277,13 @@ button:disabled {
   transform: translateY(-2px);
 }
 
-.hoverable-item.hovered {
-  background: #4CAF50;
+.hoverable-item.force-hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.hoverable-item.clicked {
+  background: #45a049;
   color: white;
-  border-color: #45a049;
 }
 </style> 

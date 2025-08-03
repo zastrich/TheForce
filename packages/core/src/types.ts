@@ -4,6 +4,8 @@ export interface HandTrackerConfig {
   hoverDelay?: number;
   videoElement?: HTMLVideoElement;
   cursorElement?: HTMLElement;
+  sensitivityX?: number;
+  sensitivityY?: number;
 }
 
 export interface HandTrackerResults {

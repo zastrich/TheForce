@@ -28,25 +28,26 @@
         class="stop-btn" 
         (click)="stopTracking()"
         [disabled]="!isTracking"
+        data-hoverable="true"
       >
         Stop Tracking
       </button>
     </div>
 
     <div class="hoverable-demo">
-      <div class="hoverable-item" data-hoverable="true">
+      <div class="hoverable-item" data-hoverable="true" (click)="handleClick($event)">
         <h3>Button 1</h3>
         <p>Hover with your hand</p>
       </div>
-      <div class="hoverable-item" data-hoverable="true">
+      <div class="hoverable-item" data-hoverable="true" (click)="handleClick($event)">
         <h3>Button 2</h3>
         <p>Point your index finger</p>
       </div>
-      <div class="hoverable-item" data-hoverable="true">
+      <div class="hoverable-item" data-hoverable="true" (click)="handleClick($event)">
         <h3>Button 3</h3>
         <p>Try different gestures</p>
       </div>
-      <div class="hoverable-item" data-hoverable="true">
+      <div class="hoverable-item" data-hoverable="true" (click)="handleClick($event)">
         <h3>Button 4</h3>
         <p>Virtual mouse control</p>
       </div>
