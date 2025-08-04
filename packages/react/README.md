@@ -15,71 +15,109 @@ yarn add @theforce/react @theforce/core
 Wrap your application or the relevant part of your component tree with `HandTrackerProvider`.
 
 ```jsx
-import React, { useRef, useEffect } from 'react';
-import { HandTrackerProvider, useHandTracker } from '@theforce/react';
+import React, { useRef, useEffect } from 'react'
+import { HandTrackerProvider, useHandTracker } from '@theforce/react'
+
+function HandTrackingDemo() {
+  const { isTracking, initialize, stop } = useHandTracker()
+  const videoRef = useRef(null)
+  const [stream, setStream] = React.useState(null)
+
+  useEffect(() => {
+    if (videoRef.current && !isTracking) {
+      initializeCamera()
+    }
+  }, [])
+
+  const initializeCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+          facingMode: 'user'
+        }
+      })
+      videoRef.current.srcObject = mediaStream
+      setStream(mediaStream)
+    } catch (error) {
+      console.error('Error accessing camera:', error)
+      alert('Unable to access camera. Please check permissions.')
+    }
+  }
+
+  const startTracking = async () => {
+    if (videoRef.current && stream) {
+      await initialize(videoRef.current)
+    }
+  }
+
+  const cleanup = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop())
+    }
+  }
+
+  useEffect(() => {
+    if (stream) {
+      startTracking()
+    }
+
+    return () => {
+      cleanup()
+      stop()
+    }
+  }, [stream])
+
+  const handleButtonClick = (button) => {
+    const currentCount = parseInt(button.target.getAttribute('data-count') || '0', 10)
+    button.target.setAttribute('data-count', currentCount + 1)
+    button.target.textContent = `Button Clicked ${currentCount + 1} times`
+  }
+
+  return (
+    <>
+      <video 
+      ref={videoRef} 
+      autoPlay 
+      muted 
+      playsInline
+      style={{ 
+        position: 'fixed', 
+        top: '100vh'
+         }}
+      />
+      <button
+        data-hoverable="true"
+        onClick={handleButtonClick}
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}
+      >
+        Button Clicked 0 times
+      </button>
+    </>
+  )
+}
 
 function App() {
-  // Optional: Configure hoverDelay and sensitivity for the HandTracker instance
   const config = {
-    hoverDelay: 2000, // Time in milliseconds to hover before triggering a click
-    sensitivityX: 1.5, // Multiplier for horizontal cursor movement sensitivity
-    sensitivityY: 1.5, // Multiplier for vertical cursor movement sensitivity
-  };
+    hoverDelay: 1000,
+    sensitivityX: 1.5,
+    sensitivityY: 1.5,
+  }
 
   return (
     <HandTrackerProvider config={config}>
       <HandTrackingDemo />
     </HandTrackerProvider>
-  );
+  )
 }
 
-function HandTrackingDemo() {
-  const { handLandmarks, isTracking, initialize, stop } = useHandTracker();
-  const videoRef = useRef(null);
-
-  useEffect(() => {
-    // Initialize camera and start tracking when the component mounts
-    const init = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play();
-          await initialize(videoRef.current); // Pass the video element to the tracker
-        }
-      } catch (error) {
-        console.error('Error accessing camera:', error);
-        alert('Unable to access camera. Please check permissions.');
-      }
-    };
-    init();
-
-    // Cleanup on component unmount
-    return () => {
-      stop();
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-      }
-    };
-  }, [initialize, stop]);
-
-  return (
-    <div>
-      <h1>Hand Tracking Demo (React)</h1>
-      <video ref={videoRef} autoPlay muted playsInline style={{ width: '100%', maxWidth: '640px' }} />
-      <p>Status: {isTracking ? 'Tracking' : 'Stopped'}</p>
-      
-      <div data-hoverable="true" style={{ padding: '20px', border: '1px solid gray', marginTop: '20px' }}>
-        Hover over me with your hand!
-      </div>
-    </div>
-  );
-}
-
-export default App;
+export default App
 ```
 
 ## `HandTrackerProvider` Props
