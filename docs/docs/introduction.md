@@ -7,12 +7,10 @@ slug: /
 
 # Welcome to TheForce Hand Tracking Library
 
-<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px'}}>
-  <img src="/img/theforce.png" alt="TheForce Logo" style={{width: '20%', flexShrink: 0}} />
-  <p>
-    TheForce is a comprehensive and intuitive hand tracking library built on top of MediaPipe, designed to bring gesture-based control to your web applications. With seamless integrations for popular JavaScript frameworks like React, Vue, and Angular, TheForce empowers developers to create immersive and accessible user experiences.
-  </p>
-</div>
+<img src="/img/theforce-logo.png" alt="TheForce Logo"  />
+  
+TheForce is a comprehensive and intuitive hand tracking library built on top of MediaPipe, designed to bring gesture-based control to your web applications. With seamless integrations for popular JavaScript frameworks like React, Vue, and Angular, TheForce empowers developers to create immersive and accessible user experiences.
+
 
 ## What is TheForce?
 
@@ -45,9 +43,8 @@ TheForce utilizes your device's camera to capture video input. MediaPipe then pr
 
 Check out this video demonstrating TheForce in a live project:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" title="TheForce Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/qoimrV3c0v4" title="TheForce Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-*(Note: Replace `YOUR_VIDEO_ID` with the actual YouTube video ID once it's uploaded.)*
 
 ## Get Started
 
