@@ -36,7 +36,9 @@ jobs:
           aws-region: us-east-1 # Replace with your desired AWS region
 
       - name: Deploy to S3
-        run: aws s3 sync build/ s3://theforce.code200.com.br --delete
+        run: aws s3 sync build/ s3://theforce.code200.com.br \
+          --delete \
+          --acl public-read
         working-directory: ./docs
 
       - name: Invalidate CloudFront Cache (Optional)
