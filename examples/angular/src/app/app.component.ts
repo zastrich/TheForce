@@ -45,7 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
   async startTracking() {
     if (this.videoElement.nativeElement && this.stream) {
       await this.handTrackerService.start(this.videoElement.nativeElement, {
-        hoverDelay: 2000,
+        hoverDelay: 1000,
         sensitivityX: 1.5,
         sensitivityY: 1.5,
       });
@@ -63,7 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
     element.classList.add('clicked');
     setTimeout(() => {
       element.classList.remove('clicked');
-    }, 2000);
+    }, 3000);
   }
 
   private cleanup() {

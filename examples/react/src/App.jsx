@@ -50,7 +50,7 @@ function HandTrackingDemo() {
     event.target.classList.add('clicked')
     setTimeout(() => {
       event.target.classList.remove('clicked')
-    }, 5000)
+    }, 3000)
   }
 
   useEffect(() => {
@@ -97,19 +97,19 @@ function HandTrackingDemo() {
         <div className="hoverable-demo">
           <div className="hoverable-item" data-hoverable="true" onClick={handleClick}>
             <h3>Button 1</h3>
-            <p>Hover with your hand</p>
+            <p>Touch me</p>
           </div>
           <div className="hoverable-item" data-hoverable="true" onClick={handleClick}>
             <h3>Button 2</h3>
-            <p>Point your index finger</p>
+            <p>Hover with your hand</p>
           </div>
           <div className="hoverable-item" data-hoverable="true" onClick={handleClick}>
             <h3>Button 3</h3>
-            <p>Try moving to other buttons</p>
+            <p>Control virtual mouse</p>
           </div>
           <div className="hoverable-item" data-hoverable="true" onClick={handleClick}>
             <h3>Button 4</h3>
-            <p>Virtual mouse control</p>
+            <p>And steady to click</p>
           </div>
         </div>
 
@@ -118,10 +118,10 @@ function HandTrackingDemo() {
           <ul>
             <li>Allow camera access when prompted</li>
             <li>Click "Start Tracking" to begin hand tracking</li>
-            <li>Point your index finger at the screen to control the virtual cursor</li>
+            <li>Use your hand to control the virtual cursor</li>
             <li>Hover over the buttons above to see them highlight</li>
-            <li>Hold your finger steady for 2 seconds to trigger hover events</li>
-            <li>Click "Stop Tracking" to end the session</li>
+            <li>Hold your hand steady for 1 second to trigger button action</li>
+            <li>Point at "Stop Tracking" to end the session</li>
           </ul>
         </div>
       </div>
@@ -131,7 +131,7 @@ function HandTrackingDemo() {
 
 function App() {
   const config = {
-    hoverDelay: 2000,
+    hoverDelay: 1000,
     sensitivityX: 1.5,
     sensitivityY: 1.5,
   };

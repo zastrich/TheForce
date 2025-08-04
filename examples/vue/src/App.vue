@@ -38,19 +38,19 @@
       <div class="hoverable-demo">
         <Hoverable class="hoverable-item" @click="handleClick">
           <h3>Button 1</h3>
-          <p>Hover with your hand</p>
+          <p>Touch me</p>
         </Hoverable>
         <Hoverable class="hoverable-item" @click="handleClick">
           <h3>Button 2</h3>
-          <p>Point your index finger</p>
+          <p>Hover with your hand</p>
         </Hoverable>
         <Hoverable class="hoverable-item" @click="handleClick">
           <h3>Button 3</h3>
-          <p>Try different gestures</p>
+          <p>Control virtual mouse</p>
         </Hoverable>
         <Hoverable class="hoverable-item" @click="handleClick">
           <h3>Button 4</h3>
-          <p>Virtual mouse control</p>
+          <p>And steady to click</p>
         </Hoverable>
       </div>
 
@@ -59,10 +59,10 @@
         <ul>
           <li>Allow camera access when prompted</li>
           <li>Click "Start Tracking" to begin hand tracking</li>
-          <li>Point your index finger at the screen to control the virtual cursor</li>
+          <li>Use your hand to control the virtual cursor</li>
           <li>Hover over the buttons above to see them highlight</li>
-          <li>Hold your finger steady for 2 seconds to trigger hover events</li>
-          <li>Click "Stop Tracking" to end the session</li>
+          <li>Hold your hand steady for 1 second to trigger button action</li>
+          <li>Point at "Stop Tracking" to end the session</li>
         </ul>
       </div>
     </div>
@@ -74,7 +74,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useHandTracker, Hoverable } from '@theforce/vue';
 
 const config = {
-  hoverDelay: 2000,
+  hoverDelay: 1000,
   sensitivityX: 1.5,
   sensitivityY: 1.5,
 };
@@ -128,7 +128,7 @@ const handleClick = (event) => {
   event.target.classList.add('clicked');
   setTimeout(() => {
     event.target.classList.remove('clicked');
-  }, 5000);
+  }, 3000);
 };
 </script>
 
