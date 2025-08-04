@@ -3,8 +3,14 @@ name: CI/CD
 on:
   push:
     branches: [main]
+    paths:
+      - 'examples/**'
+      - 'packages/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'examples/**'
+      - 'packages/**'
 
 jobs:
   build-and-test:
