@@ -13,6 +13,8 @@ A comprehensive hand tracking library built on MediaPipe, providing seamless int
 - 🖱️ Virtual mouse cursor functionality
 - ⌛ Configurable hover-to-click actions
 - 🧪 Extensive testing coverage
+- 📹 Integrated camera handling within core library
+- 🐞 Debug mode to visualize camera feed
 
 ## Installation
 
@@ -38,47 +40,59 @@ import { HandTracker } from '@theforce/core';
 // Initialize the hand tracker
 const tracker = new HandTracker({
   hoverDelay: 2000,
-  cursorImageUrl: '/custom-cursor.png'
+  sensitivityX: 1.5,
+  sensitivityY: 1.5,
+  cursorImageUrl: '/custom-cursor.png',
+  cursorLandmarkIndex: 9, // Use middle finger base as cursor point
+  debug: true // Show camera feed for debugging
 });
 
-// Start tracking
+// Start tracking (camera will be initialized automatically)
 await tracker.initialize();
-await tracker.start(videoElement);
+await tracker.start();
 
 // Listen for hand tracking results
 tracker.onResults((results) => {
   const { multiHandLandmarks } = results;
   // Process hand landmarks
 });
+
+// To stop tracking
+// await tracker.stop();
 ```
 
 ### React Integration
 
 ```jsx
+import React, { useEffect } from 'react';
 import { HandTrackerProvider, useHandTracker } from '@theforce/react';
 
 function App() {
+  const config = {
+    hoverDelay: 1000,
+    sensitivityX: 1.5,
+    sensitivityY: 1.5,
+  };
+
   return (
-    <HandTrackerProvider>
-      <HandTrackingComponent />
+    <HandTrackerProvider config={config} debug={true}>
+      <HandTrackingDemo />
     </HandTrackerProvider>
   );
 }
 
-function HandTrackingComponent() {
-  const videoRef = useRef(null);
-  const { handLandmarks, initialize, isTracking } = useHandTracker();
+function HandTrackingDemo() {
+  const { handLandmarks, initialize, isTracking, stop } = useHandTracker();
 
   useEffect(() => {
-    if (videoRef.current) {
-      initialize(videoRef.current);
-    }
-  }, [initialize]);
+    initialize();
+    return () => { stop(); };
+  }, [initialize, stop]);
 
   return (
     <div>
-      <video ref={videoRef} />
       <div data-hoverable>Hover with your hand!</div>
+      {/* Your UI components here */}
     </div>
   );
 }
@@ -88,22 +102,31 @@ function HandTrackingComponent() {
 
 ```vue
 <script setup>
+import { onMounted, onUnmounted } from 'vue';
 import { useHandTracker, Hoverable } from '@theforce/vue';
 
-const videoRef = ref(null);
-const { handLandmarks, initialize, isTracking } = useHandTracker();
+const config = {
+  hoverDelay: 1000,
+  sensitivityX: 1.5,
+  sensitivityY: 1.5,
+  debug: true,
+};
+
+const { handLandmarks, initialize, isTracking, stop } = useHandTracker(config);
 
 onMounted(async () => {
-  if (videoRef.value) {
-    await initialize(videoRef.value);
-  }
+  await initialize();
+});
+
+onUnmounted(() => {
+  stop();
 });
 </script>
 
 <template>
   <div>
-    <video ref="videoRef" />
     <Hoverable>Hover with your hand!</Hoverable>
+    <!-- Your UI components here -->
   </div>
 </template>
 ```
@@ -121,29 +144,38 @@ import { HandTrackerModule } from '@theforce/angular';
 export class AppModule { }
 
 // app.component.ts
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HandTrackerService } from '@theforce/angular';
+import { HandTrackerConfig } from '@theforce/core';
 
 @Component({
   selector: 'app-hand-tracking',
   template: `
     <div>
-      <video #video></video>
-      <div data-hoverable>Hover with your hand!</div>
+      <div appHoverable>Hover with your hand!</div>
+      <!-- Your UI components here -->
     </div>
   `
 })
-export class HandTrackingComponent {
-  @ViewChild('video') videoElement: ElementRef<HTMLVideoElement>;
+export class HandTrackingComponent implements OnInit, OnDestroy {
+  constructor(private handTracker: HandTrackerService) {}
 
-  constructor(private handTracker: HandTrackerService) {
+  ngOnInit() {
+    const config: HandTrackerConfig = {
+      hoverDelay: 1000,
+      sensitivityX: 1.5,
+      sensitivityY: 1.5,
+      debug: true,
+    };
+    this.handTracker.initialize(config);
     this.handTracker.handLandmarks$.subscribe(landmarks => {
       // Process hand landmarks
     });
+    this.handTracker.start();
   }
 
-  async ngAfterViewInit() {
-    await this.handTracker.start(this.videoElement.nativeElement);
+  ngOnDestroy() {
+    this.handTracker.stop();
   }
 }
 ```
@@ -184,11 +216,12 @@ npm start
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `hoverDelay` | number | 2000 | Time in milliseconds to hover before triggering click |
-| `sensitivityX` | number | 1 | Multiplier for horizontal cursor movement sensitivity |
-| `sensitivityY` | number | 1 | Multiplier for vertical cursor movement sensitivity |
-| `cursorImageUrl` | string | - | URL for custom cursor image |
-| `actionImageUrl` | string | - | URL for action indicator image |
+| `hoverDelay` | `number` | `2000` | Time in milliseconds to hover before triggering click |
+| `sensitivityX` | `number` | `1` | Multiplier for horizontal cursor movement sensitivity |
+| `sensitivityY` | `number` | `1` | Multiplier for vertical cursor movement sensitivity |
+| `cursorImageUrl` | `string` | `-` | URL for custom cursor image |
+| `cursorLandmarkIndex` | `number` | `9` | The index of the landmark to use for cursor positioning (e.g., 0 for wrist, 8 for index finger tip, 9 for middle finger base). Defaults to 9 (middle finger base) for a more central hand tracking experience. |
+| `debug` | `boolean` | `false` | If true, the camera feed will be displayed in the bottom right corner for debugging purposes. |
 
 ## CSS Classes
 
@@ -196,6 +229,7 @@ The library adds the following CSS classes that you can style:
 
 - `.force-hoverable`: Added to elements that can be interacted with
 - `.force-hover`: Added to elements while being hovered over
+- `.force-loading`: Applied to the virtual cursor element when a hover action is in progress (e.g., waiting for `hoverDelay` to trigger a click).
 
 ## Browser Support
 
@@ -313,8 +347,8 @@ We welcome contributions! Here's how you can help:
 
 3. **Test your changes**
    ```bash
-   npm test
    npm run build
+   npm test
    ```
 
 4. **Commit your changes**
