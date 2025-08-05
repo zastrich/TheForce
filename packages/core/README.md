@@ -15,22 +15,20 @@ yarn add @theforce/core
 ```javascript
 import { HandTracker } from '@theforce/core';
 
-// Get your video element (e.g., from a <video> tag in your HTML)
-const videoElement = document.getElementById('myVideoElement');
-
 // Initialize the hand tracker with optional configuration
 const tracker = new HandTracker({
   hoverDelay: 2000, // Time in milliseconds to hover before triggering a click (default: 2000ms)
   sensitivityX: 1.5, // Multiplier for horizontal cursor movement sensitivity (default: 1)
   sensitivityY: 1.5, // Multiplier for vertical cursor movement sensitivity (default: 1)
-  cursorImageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcgMkwxNyAxMkw3IDIyVjJaIiBmaWxsPSIjNGNhZjUwIi8+Cjwvc3ZnPgo=' // Optional: URL for a custom cursor image
+  cursorImageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcgMkwxNyAxMkw3IDIyVjJaIiBmaWxsPSIjNGNhZjUwIi8+Cjwvc3ZnPgo=', // Optional: URL for a custom cursor image
+  debug: true // Set to true to display the camera feed in the bottom right corner for debugging
 });
 
-// Initialize the tracker (creates the virtual cursor element)
+// Initialize the tracker (creates the virtual cursor element and sets up camera)
 await tracker.initialize();
 
-// Start tracking hands using the video element
-await tracker.start(videoElement);
+// Start tracking hands
+await tracker.start();
 
 // Listen for hand tracking results (e.g., hand landmarks)
 tracker.onResults((results) => {
@@ -55,7 +53,8 @@ The `HandTracker` constructor accepts an optional configuration object with the 
 | `sensitivityX`   | `number` | `1`       | Multiplier for horizontal cursor movement sensitivity. Higher values make the cursor move faster horizontally. |
 | `sensitivityY`   | `number` | `1`       | Multiplier for vertical cursor movement sensitivity. Higher values make the cursor move faster vertically. |
 | `cursorImageUrl` | `string` | `-`       | Optional URL for a custom image to be used as the virtual cursor. If not provided, a default red circle is used. |
-| `actionImageUrl` | `string` | `-`       | Optional URL for an image to indicate an action (e.g., a click animation). (Currently not implemented in core) |
+| `cursorLandmarkIndex` | `number` | `9`       | The index of the landmark to use for cursor positioning (e.g., 0 for wrist, 8 for index finger tip, 9 for middle finger base). Defaults to 9 (middle finger base) for a more central hand tracking experience. |
+| `debug`          | `boolean`| `false`   | If true, the camera feed will be displayed in the bottom right corner for debugging purposes. |
 
 ## CSS Classes
 

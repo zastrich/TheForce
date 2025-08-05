@@ -30,7 +30,7 @@ export class HandTrackerService implements OnDestroy {
     });
   }
 
-  public async start(videoElement: HTMLVideoElement, config?: HandTrackerConfig): Promise<void> {
+  public async start(config?: HandTrackerConfig): Promise<void> {
     if (this.isTracking) {
       return;
     }
@@ -40,7 +40,7 @@ export class HandTrackerService implements OnDestroy {
     }
     
     if (this.handTracker) {
-      await this.handTracker.start(videoElement);
+      await this.handTracker.start();
       this.isTracking = true;
     }
   }
@@ -55,9 +55,9 @@ export class HandTrackerService implements OnDestroy {
     this.handLandmarksSubject.next([]);
   }
 
-  public async restart(videoElement: HTMLVideoElement, config?: HandTrackerConfig): Promise<void> {
+  public async restart(config?: HandTrackerConfig): Promise<void> {
     await this.stop();
-    await this.start(videoElement, config);
+    await this.start(config);
   }
 
   public getTracker(): HandTracker | null {

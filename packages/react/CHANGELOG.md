@@ -1,5 +1,16 @@
 # @theforce/react
 
+## 1.4.0
+
+### Minor Changes
+
+- Video capture has pass to core, and hide camera, adjust cursor effect and sensitivity
+
+### Patch Changes
+
+- Updated dependencies
+  - @theforce/core@1.3.0
+
 ## 1.3.0
 
 ### Minor Changes

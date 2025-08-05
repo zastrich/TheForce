@@ -15,59 +15,21 @@ yarn add @theforce/react @theforce/core
 Wrap your application or the relevant part of your component tree with `HandTrackerProvider`.
 
 ```jsx
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { HandTrackerProvider, useHandTracker } from '@theforce/react'
 
 function HandTrackingDemo() {
   const { isTracking, initialize, stop } = useHandTracker()
-  const videoRef = useRef(null)
-  const [stream, setStream] = React.useState(null)
 
   useEffect(() => {
-    if (videoRef.current && !isTracking) {
-      initializeCamera()
-    }
-  }, [])
-
-  const initializeCamera = async () => {
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: 'user'
-        }
-      })
-      videoRef.current.srcObject = mediaStream
-      setStream(mediaStream)
-    } catch (error) {
-      console.error('Error accessing camera:', error)
-      alert('Unable to access camera. Please check permissions.')
-    }
-  }
-
-  const startTracking = async () => {
-    if (videoRef.current && stream) {
-      await initialize(videoRef.current)
-    }
-  }
-
-  const cleanup = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop())
-    }
-  }
-
-  useEffect(() => {
-    if (stream) {
-      startTracking()
-    }
+    // Initialize tracking when the component mounts
+    initialize()
 
     return () => {
-      cleanup()
+      // Stop tracking when the component unmounts
       stop()
     }
-  }, [stream])
+  }, [])
 
   const handleButtonClick = (button) => {
     const currentCount = parseInt(button.target.getAttribute('data-count') || '0', 10)
@@ -77,16 +39,6 @@ function HandTrackingDemo() {
 
   return (
     <>
-      <video 
-      ref={videoRef} 
-      autoPlay 
-      muted 
-      playsInline
-      style={{ 
-        position: 'fixed', 
-        top: '100vh'
-         }}
-      />
       <button
         data-hoverable="true"
         onClick={handleButtonClick}
@@ -111,7 +63,7 @@ function App() {
   }
 
   return (
-    <HandTrackerProvider config={config}>
+    <HandTrackerProvider config={config} debug={true}>
       <HandTrackingDemo />
     </HandTrackerProvider>
   )
@@ -124,7 +76,8 @@ export default App
 
 | Prop   | Type   | Default | Description                                           |
 | ------ | ------ | ------- | ----------------------------------------------------- |
-| `config` | `object` | `{}`      | Configuration object for the underlying `HandTracker` instance. See `@theforce/core` documentation for available options like `hoverDelay`, `sensitivityX`, `sensitivityY`, `cursorImageUrl`, `actionImageUrl`. |
+| `config` | `object` | `{}`      | Configuration object for the underlying `HandTracker` instance. See `@theforce/core` documentation for available options like `hoverDelay`, `sensitivityX`, `sensitivityY`, `cursorImageUrl`, `cursorLandmarkIndex`. |
+| `debug`  | `boolean`| `false`   | If true, the camera feed will be displayed in the bottom right corner for debugging purposes. |
 
 ## `useHandTracker` Hook
 
@@ -138,7 +91,7 @@ const { handLandmarks, isTracking, initialize, stop } = useHandTracker();
 | --------------- | --------- | ----------------------------------------------------- |
 | `handLandmarks` | `Array<any>` | An array of detected hand landmarks. Empty if no hands are detected. |
 | `isTracking`    | `boolean` | `true` if hand tracking is active, `false` otherwise. |
-| `initialize`    | `(videoElement: HTMLVideoElement) => Promise<void>` | Function to initialize and start hand tracking. Takes a video element as input. |
+| `initialize`    | `() => Promise<void>` | Function to initialize and start hand tracking. |
 | `stop`          | `() => Promise<void>` | Function to stop hand tracking and clean up resources. |
 
 ## Styling Hoverable Elements

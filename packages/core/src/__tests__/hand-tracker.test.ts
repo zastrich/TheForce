@@ -1,165 +1,156 @@
 import { HandTracker } from '../hand-tracker';
 import { HandTrackerConfig } from '../types';
+import { getCursorScreenCoordinates } from '../utils';
+import { Hands } from '@mediapipe/hands';
+
+// Mock MediaPipe Camera
+jest.mock('@mediapipe/camera_utils', () => ({
+  Camera: jest.fn().mockImplementation(() => ({
+    start: jest.fn(),
+    stop: jest.fn(),
+  })),
+}));
+
+// Mock MediaPipe Hands with externally accessible mock functions
+const mockOnResults = jest.fn();
+const mockSetOptions = jest.fn();
+const mockSend = jest.fn();
+
+jest.mock('@mediapipe/hands', () => ({
+  Hands: jest.fn().mockImplementation(() => ({
+    onResults: mockOnResults,
+    setOptions: mockSetOptions,
+    send: mockSend,
+  })),
+}));
+
+// Mock document.elementFromPoint
+document.elementFromPoint = jest.fn();
+
+// Helper to create a full array of mock landmarks
+const createMockLandmarks = (length = 21) =>
+  Array.from({ length }, (_, i) => ({
+    x: 0.05 * i,
+    y: 0.05 * i,
+    z: 0.05 * i,
+  }));
 
 describe('HandTracker', () => {
   let tracker: HandTracker;
-  let mockVideoElement: HTMLVideoElement;
-  let mockParentElement: HTMLElement;
+
+  const getOnResultsCallback = () => {
+    if (!mockOnResults.mock.calls.length) {
+      throw new Error('onResults was not called on the Hands mock');
+    }
+    return mockOnResults.mock.calls[mockOnResults.mock.calls.length - 1][0];
+  };
 
   beforeEach(() => {
-    // Create mock video element
-    mockVideoElement = document.createElement('video');
-    mockParentElement = document.createElement('div');
-    mockParentElement.appendChild(mockVideoElement);
-    document.body.appendChild(mockParentElement);
+    // Clear all mocks before each test
+    mockOnResults.mockClear();
+    mockSetOptions.mockClear();
+    mockSend.mockClear();
+    (Hands as jest.Mock).mockClear();
+    (document.elementFromPoint as jest.Mock).mockClear();
 
-    tracker = new HandTracker();
+    document.body.innerHTML = '';
+    Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
+    Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 768 });
+    jest.useFakeTimers();
   });
 
-  afterEach(() => {
-    // Clean up
+  afterEach(async () => {
     if (tracker) {
-      tracker.stop();
+      await tracker.stop();
     }
     document.body.innerHTML = '';
+    jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   describe('constructor', () => {
     it('should create a HandTracker instance with default config', () => {
+      tracker = new HandTracker();
       expect(tracker).toBeInstanceOf(HandTracker);
+      expect(Hands).toHaveBeenCalledTimes(1);
     });
 
     it('should create a HandTracker instance with custom config', () => {
       const config: HandTrackerConfig = {
         hoverDelay: 2000,
         cursorImageUrl: '/custom-cursor.png',
+        debug: true,
+        cursorLandmarkIndex: 9,
       };
-      const customTracker = new HandTracker(config);
-      expect(customTracker).toBeInstanceOf(HandTracker);
+      tracker = new HandTracker(config);
+      expect(tracker).toBeInstanceOf(HandTracker);
+      expect(Hands).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('initialize', () => {
+  describe('functionality', () => {
+    beforeEach(() => {
+      tracker = new HandTracker();
+    });
+
     it('should initialize the tracker and create cursor element', async () => {
       await tracker.initialize();
-      
       const cursorElement = document.querySelector('div[style*="position: fixed"]');
       expect(cursorElement).toBeTruthy();
     });
 
-    it('should not initialize twice', async () => {
-      await tracker.initialize();
-      await tracker.initialize(); // Should not create duplicate cursor elements
-      
-      const cursorElements = document.querySelectorAll('div[style*="position: fixed"]');
-      expect(cursorElements).toHaveLength(1);
-    });
-  });
-
-  describe('start', () => {
-    it('should start tracking with video element', async () => {
-      await tracker.initialize();
-      await tracker.start(mockVideoElement);
-      
-      // Should create canvas element
-      const canvasElement = mockParentElement.querySelector('canvas');
-      expect(canvasElement).toBeTruthy();
-    });
-
-    it('should initialize if not already initialized', async () => {
-      await tracker.start(mockVideoElement);
-      
-      const cursorElement = document.querySelector('div[style*="position: fixed"]');
-      expect(cursorElement).toBeTruthy();
-    });
-  });
-
-  describe('stop', () => {
-    it('should stop tracking and clean up elements', async () => {
-      await tracker.initialize();
-      await tracker.start(mockVideoElement);
-      await tracker.stop();
-      
-      const cursorElement = document.querySelector('div[style*="position: fixed"]');
-      const canvasElement = mockParentElement.querySelector('canvas');
-      
-      expect(cursorElement).toBeFalsy();
-      expect(canvasElement).toBeFalsy();
-    });
-  });
-
-  describe('onResults', () => {
-    it('should register callback for results', () => {
-      const mockCallback = jest.fn();
-      tracker.onResults(mockCallback);
-      
-      // The callback should be registered (we can't easily test the internal callback without exposing it)
-      expect(mockCallback).toBeDefined();
-    });
-  });
-
-  describe('cursor positioning', () => {
     it('should update cursor position based on landmarks', async () => {
       await tracker.initialize();
-      
-      const mockLandmarks = [
-        { x: 0.5, y: 0.5, z: 0 }, // Index finger tip at center
-      ];
-      
-      // Simulate results with landmarks
-      const mockResults = {
-        multiHandLandmarks: [mockLandmarks],
-        multiHandedness: [],
-      };
-      
-      // We need to access the private method for testing
-      // This is a limitation of the current design
-      // In a real scenario, we might want to make some methods protected for testing
+      const onResultsCallback = getOnResultsCallback();
+      const mockLandmarks = createMockLandmarks();
+      const cursorLandmark = mockLandmarks[9]; // Default landmark index is 9
+      onResultsCallback({ multiHandLandmarks: [mockLandmarks] });
+      const cursorElement = document.querySelector('div[style*="position: fixed"]') as HTMLElement;
+      const expectedPosition = getCursorScreenCoordinates(cursorLandmark, {});
+      expect(cursorElement.style.left).toBe(`${expectedPosition.x}px`);
+      expect(cursorElement.style.top).toBe(`${expectedPosition.y}px`);
     });
-  });
 
-  describe('hover detection', () => {
     it('should detect hoverable elements', async () => {
       await tracker.initialize();
-      
-      // Create a hoverable element
+      const onResultsCallback = getOnResultsCallback();
       const hoverableElement = document.createElement('div');
       hoverableElement.setAttribute('data-hoverable', 'true');
       document.body.appendChild(hoverableElement);
-      
-      // Mock elementFromPoint to return our hoverable element
       (document.elementFromPoint as jest.Mock).mockReturnValue(hoverableElement);
-      
-      // Simulate landmarks pointing at the element
-      const mockLandmarks = [
-        { x: 0.5, y: 0.5, z: 0 },
-      ];
-      
-      // This would require accessing private methods or restructuring for better testability
+      const mockLandmarks = createMockLandmarks();
+      mockLandmarks[9] = { x: 0.5, y: 0.5, z: 0 }; // Position cursor over the element
+      onResultsCallback({ multiHandLandmarks: [mockLandmarks] });
+      expect(hoverableElement.classList.contains('force-hover')).toBe(true);
     });
-  });
 
-  describe('configuration', () => {
-    it('should use custom cursor image when provided', async () => {
-      const config: HandTrackerConfig = {
-        cursorImageUrl: '/custom-cursor.png',
-      };
-      const customTracker = new HandTracker(config);
-      
-      await customTracker.initialize();
-      
+    it('should use custom hover delay', async () => {
+      tracker = new HandTracker({ hoverDelay: 500 });
+      await tracker.initialize();
+      const onResultsCallback = getOnResultsCallback();
+      const hoverableElement = document.createElement('div');
+      hoverableElement.setAttribute('data-hoverable', 'true');
+      document.body.appendChild(hoverableElement);
+      (document.elementFromPoint as jest.Mock).mockReturnValue(hoverableElement);
+      const mockLandmarks = createMockLandmarks();
+      mockLandmarks[9] = { x: 0.5, y: 0.5, z: 0 }; // Position cursor over the element
+      onResultsCallback({ multiHandLandmarks: [mockLandmarks] });
+      jest.advanceTimersByTime(500);
+      expect(hoverableElement.classList.contains('force-hover')).toBe(true);
+    });
+
+    it('should use custom cursor landmark index', async () => {
+      tracker = new HandTracker({ cursorLandmarkIndex: 8 });
+      await tracker.initialize();
+      const onResultsCallback = getOnResultsCallback();
+      const mockLandmarks = createMockLandmarks();
+      const cursorLandmark = mockLandmarks[8]; // Use landmark 8
+      (document.elementFromPoint as jest.Mock).mockReturnValue(document.createElement('div'));
+      onResultsCallback({ multiHandLandmarks: [mockLandmarks] });
       const cursorElement = document.querySelector('div[style*="position: fixed"]') as HTMLElement;
-      expect(cursorElement?.style.backgroundImage).toContain('/custom-cursor.png');
-    });
-
-    it('should use custom hover delay', () => {
-      const config: HandTrackerConfig = {
-        hoverDelay: 3000,
-      };
-      const customTracker = new HandTracker(config);
-      
-      // The hover delay should be set in the configuration
-      // We can't easily test this without exposing internal state
+      const expectedPosition = getCursorScreenCoordinates(cursorLandmark, {});
+      expect(cursorElement.style.left).toBe(`${expectedPosition.x}px`);
+      expect(cursorElement.style.top).toBe(`${expectedPosition.y}px`);
     });
   });
-}); 
+});

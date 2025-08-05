@@ -3,7 +3,7 @@ import { HandTracker, HandTrackerConfig } from '@theforce/core';
 
 interface HandTrackerContextType {
   handLandmarks: any[];
-  initialize: (videoElement: HTMLVideoElement, config?: HandTrackerConfig) => Promise<void>;
+  initialize: (config?: HandTrackerConfig) => Promise<void>;
   stop: () => Promise<void>;
   isTracking: boolean;
 }
@@ -13,32 +13,33 @@ const HandTrackerContext = createContext<HandTrackerContextType | null>(null);
 interface HandTrackerProviderProps {
   children: React.ReactNode;
   config?: HandTrackerConfig;
+  debug?: boolean;
 }
 
-export const HandTrackerProvider: React.FC<HandTrackerProviderProps> = ({ 
-  children, 
-  config 
+export const HandTrackerProvider: React.FC<HandTrackerProviderProps> = ({
+  children,
+  config,
+  debug
 }) => {
   const [handLandmarks, setHandLandmarks] = useState<any[]>([]);
   const [isTracking, setIsTracking] = useState(false);
   const trackerRef = useRef<HandTracker | null>(null);
 
   const initialize = useCallback(async (
-    videoElement: HTMLVideoElement, 
     customConfig?: HandTrackerConfig
   ) => {
     if (isTracking) return;
 
-    const finalConfig = { ...config, ...customConfig };
+    const finalConfig = { ...config, ...customConfig, debug };
     trackerRef.current = new HandTracker(finalConfig);
 
     trackerRef.current.onResults((results) => {
       setHandLandmarks(results.multiHandLandmarks || []);
     });
 
-    await trackerRef.current.start(videoElement);
+    await trackerRef.current.start();
     setIsTracking(true);
-  }, [config, isTracking]);
+  }, [config, isTracking, debug]);
 
   const stop = useCallback(async () => {
     if (!trackerRef.current || !isTracking) return;
@@ -88,4 +89,4 @@ export const Hoverable: React.FC<{
       {children}
     </div>
   );
-}; 
+};

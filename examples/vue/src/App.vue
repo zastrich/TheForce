@@ -7,21 +7,11 @@
         Status: {{ isTracking ? `Tracking (${handLandmarks.length} hands)` : 'Stopped' }}
       </div>
 
-      <div class="video-container">
-        <video 
-          ref="videoRef" 
-          autoplay 
-          muted 
-          playsinline
-          class="video"
-        />
-      </div>
-
       <div class="controls">
         <button 
           class="start-btn" 
           @click="startTracking"
-          :disabled="isTracking || !stream"
+          :disabled="isTracking"
         >
           Start Tracking
         </button>
@@ -77,51 +67,25 @@ const config = {
   hoverDelay: 1000,
   sensitivityX: 1.5,
   sensitivityY: 1.5,
+  debug: true,
 };
 
 const { handLandmarks, isTracking, initialize, stop } = useHandTracker(config);
-const videoRef = ref(null);
-const stream = ref(null);
 
 onMounted(async () => {
-  await initializeCamera();
+  await initialize();
 });
 
 onUnmounted(() => {
-  cleanup();
+  stop();
 });
 
-const initializeCamera = async () => {
-  try {
-    const mediaStream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        width: { ideal: 640 },
-        height: { ideal: 480 },
-        facingMode: 'user',
-      },
-    });
-    videoRef.value.srcObject = mediaStream;
-    stream.value = mediaStream;
-  } catch (error) {
-    console.error('Error accessing camera:', error);
-    alert('Unable to access camera. Please check permissions.');
-  }
-};
-
 const startTracking = async () => {
-  if (videoRef.value && stream.value) {
-    await initialize(videoRef.value);
-  }
+  await initialize();
 };
 
 const stopTracking = async () => {
   await stop();
-};
-
-const cleanup = () => {
-  if (stream.value) {
-    stream.value.getTracks().forEach((track) => track.stop());
-  }
 };
 
 const handleClick = (event) => {
