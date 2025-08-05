@@ -1,49 +1,16 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { HandTrackerProvider, useHandTracker } from '@theforce/react'
 import './App.css'
 
 function HandTrackingDemo() {
   const { handLandmarks, isTracking, initialize, stop } = useHandTracker()
-  const videoRef = useRef(null)
-  const [stream, setStream] = React.useState(null)
-
-  useEffect(() => {
-    if (videoRef.current && !isTracking) {
-      initializeCamera()
-    }
-  }, [])
-
-  const initializeCamera = async () => {
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: 'user'
-        }
-      })
-      videoRef.current.srcObject = mediaStream
-      setStream(mediaStream)
-    } catch (error) {
-      console.error('Error accessing camera:', error)
-      alert('Unable to access camera. Please check permissions.')
-    }
-  }
 
   const startTracking = async () => {
-    if (videoRef.current && stream) {
-      await initialize(videoRef.current)
-    }
+    await initialize()
   }
 
   const stopTracking = async () => {
     await stop()
-  }
-
-  const cleanup = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop())
-    }
   }
 
   const handleClick = (event) => {
@@ -52,10 +19,6 @@ function HandTrackingDemo() {
       event.target.classList.remove('clicked')
     }, 3000)
   }
-
-  useEffect(() => {
-    return cleanup
-  }, [stream])
 
   return (
     <div className="app">
@@ -66,21 +29,11 @@ function HandTrackingDemo() {
           Status: {isTracking ? `Tracking (${handLandmarks.length} hands)` : 'Stopped'}
         </div>
 
-        <div className="video-container">
-          <video 
-            ref={videoRef} 
-            autoPlay 
-            muted 
-            playsInline
-            className="video"
-          />
-        </div>
-
         <div className="controls">
           <button 
             className="start-btn" 
             onClick={startTracking}
-            disabled={isTracking || !stream}
+            disabled={isTracking}
           >
             Start Tracking
           </button>
@@ -132,8 +85,8 @@ function HandTrackingDemo() {
 function App() {
   const config = {
     hoverDelay: 1000,
-    sensitivityX: 1.5,
-    sensitivityY: 1.5,
+    sensitivityX: 4,
+    sensitivityY: 4,
   };
 
   return (
@@ -143,4 +96,4 @@ function App() {
   );
 }
 
-export default App 
+export default App
