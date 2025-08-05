@@ -1,5 +1,11 @@
 # @theforce/core
 
+## 1.3.0
+
+### Minor Changes
+
+- Video capture has pass to core, and hide camera, adjust cursor effect and sensitivity
+
 ## 1.2.0
 
 ### Minor Changes
