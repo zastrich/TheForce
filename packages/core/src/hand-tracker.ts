@@ -5,8 +5,8 @@ import { HandTrackerConfig, HandTrackerResults } from './types';
 export class HandTracker {
   private hands: Hands;
   private camera: Camera | null = null;
-  private videoElement: HTMLVideoElement | null = null;
-  private canvasElement: HTMLCanvasElement | null = null;
+  private videoElement: HTMLVideoElement;
+  private canvasElement: HTMLCanvasElement;
   private cursorElement: HTMLElement | null = null;
   private config: HandTrackerConfig;
   private onResultsCallback: ((results: HandTrackerResults) => void) | null = null;
@@ -19,24 +19,54 @@ export class HandTracker {
       hoverDelay: 2000,
       sensitivityX: 1,
       sensitivityY: 1,
+      cursorLandmarkIndex: 9, // Default to middle finger base
       ...config
     };
-    
+
     this.hands = new Hands({
       locateFile: (file) => {
         return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
       }
     });
 
+    this.videoElement = document.createElement('video');
+    this.videoElement.autoplay = true;
+    this.videoElement.muted = true;
+    this.videoElement.playsInline = true;
+    this.videoElement.style.display = 'none'; // Hidden by default
+
+    this.canvasElement = document.createElement('canvas');
+    this.canvasElement.style.display = 'none'; // Hidden by default
+
+    if (this.config.debug) {
+      this.videoElement.style.display = 'block';
+      this.videoElement.style.position = 'fixed';
+      this.videoElement.style.bottom = '10px';
+      this.videoElement.style.right = '10px';
+      this.videoElement.style.width = '200px';
+      this.videoElement.style.height = '150px';
+      this.videoElement.style.zIndex = '9999';
+      document.body.appendChild(this.videoElement);
+
+      this.canvasElement.style.display = 'block';
+      this.canvasElement.style.position = 'fixed';
+      this.canvasElement.style.bottom = '10px';
+      this.canvasElement.style.right = '10px';
+      this.canvasElement.style.width = '200px';
+      this.canvasElement.style.height = '150px';
+      this.canvasElement.style.zIndex = '10000';
+      document.body.appendChild(this.canvasElement);
+    }
+
     this.setupHands();
   }
 
   private setupHands(): void {
     this.hands.setOptions({
-      maxNumHands: 2,
+      maxNumHands: 1,
       modelComplexity: 1,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5
+      minDetectionConfidence: 0.9,
+      minTrackingConfidence: 0.9
     });
 
     this.hands.onResults((results) => {
@@ -56,13 +86,36 @@ export class HandTracker {
     }
   }
 
+  private _getCursorScreenCoordinates(landmark: any): { x: number; y: number } {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    // Normalize landmark.x and y to be from -0.5 to 0.5 (centered)
+    // landmark.x is 0 (right) to 1 (left), so (0.5 - landmark.x) flips and centers it
+    const normalizedXFromCenter = (0.5 - landmark.x);
+    const normalizedYFromCenter = (landmark.y - 0.5);
+
+    // Apply sensitivity to the normalized distance from center
+    const scaledXFromCenter = normalizedXFromCenter * (this.config.sensitivityX || 1);
+    const scaledYFromCenter = normalizedYFromCenter * (this.config.sensitivityY || 1);
+
+    // Clamp the scaled values to ensure the cursor stays within screen bounds (normalized -0.5 to 0.5)
+    const clampedScaledX = Math.max(-0.5, Math.min(0.5, scaledXFromCenter));
+    const clampedScaledY = Math.max(-0.5, Math.min(0.5, scaledYFromCenter));
+
+    // Map the clamped, scaled normalized values to screen coordinates
+    const x = centerX + (clampedScaledX * window.innerWidth);
+    const y = centerY + (clampedScaledY * window.innerHeight);
+
+    return { x, y };
+  }
+
   private updateCursor(landmarks: any[]): void {
     if (!this.cursorElement || !landmarks || landmarks.length === 0) return;
 
-    const indexFinger = landmarks[8]; // Index finger tip
-    if (indexFinger) {
-      const x = (1 - indexFinger.x) * window.innerWidth * (this.config.sensitivityX || 1);
-      const y = indexFinger.y * window.innerHeight * (this.config.sensitivityY || 1);
+    const cursorLandmark = landmarks[this.config.cursorLandmarkIndex || 9];
+    if (cursorLandmark) {
+      const { x, y } = this._getCursorScreenCoordinates(cursorLandmark);
 
       this.cursorElement.style.left = `${x}px`;
       this.cursorElement.style.top = `${y}px`;
@@ -73,11 +126,10 @@ export class HandTracker {
   private checkHoverableElements(landmarks: any[]): void {
     if (!landmarks || landmarks.length === 0) return;
 
-    const indexFinger = landmarks[8];
-    if (!indexFinger) return;
+    const cursorLandmark = landmarks[this.config.cursorLandmarkIndex || 9];
+    if (!cursorLandmark) return;
 
-    const x = (1 - indexFinger.x) * window.innerWidth * (this.config.sensitivityX || 1);
-    const y = indexFinger.y * window.innerHeight * (this.config.sensitivityY || 1);
+    const { x, y } = this._getCursorScreenCoordinates(cursorLandmark);
 
     const element = document.elementFromPoint(x, y) as HTMLElement;
     const hoverableElement = element?.closest('[data-hoverable]') as HTMLElement;
@@ -147,6 +199,7 @@ export class HandTracker {
     this.cursorElement.style.backgroundColor = 'red';
     this.cursorElement.style.opacity = '0.7';
     this.cursorElement.style.transform = 'translate(-50%, -50%)';
+    this.cursorElement.style.transition = 'all 0.2s';
 
     const style = document.createElement('style');
     style.innerHTML = `
@@ -193,27 +246,21 @@ export class HandTracker {
     this.isInitialized = true;
   }
 
-  public async start(videoElement: HTMLVideoElement): Promise<void> {
+  public async start(): Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();
     }
 
-    this.videoElement = videoElement;
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      this.videoElement.srcObject = stream;
+      await this.videoElement.play(); // Ensure video is playing before starting camera
 
-    // Create canvas for drawing
-    this.canvasElement = document.createElement('canvas');
-    this.canvasElement.style.position = 'absolute';
-    this.canvasElement.style.top = '0';
-    this.canvasElement.style.left = '0';
-    this.canvasElement.style.pointerEvents = 'none';
-    this.canvasElement.style.zIndex = '1';
-
-    if (videoElement.parentElement) {
-      videoElement.parentElement.style.position = 'relative';
-      videoElement.parentElement.appendChild(this.canvasElement);
+      this.canvasElement.width = this.videoElement.videoWidth;
+      this.canvasElement.height = this.videoElement.videoHeight;
     }
 
-    this.camera = new Camera(videoElement, {
+    this.camera = new Camera(this.videoElement, {
       onFrame: async () => {
         if (this.videoElement) {
           await this.hands.send({ image: this.videoElement });
@@ -232,14 +279,17 @@ export class HandTracker {
       this.camera = null;
     }
 
-    if (this.cursorElement && this.cursorElement.parentElement) {
-      this.cursorElement.parentElement.removeChild(this.cursorElement);
-      this.cursorElement = null;
+    if (this.videoElement && this.videoElement.parentElement) {
+      this.videoElement.parentElement.removeChild(this.videoElement);
     }
 
     if (this.canvasElement && this.canvasElement.parentElement) {
       this.canvasElement.parentElement.removeChild(this.canvasElement);
-      this.canvasElement = null;
+    }
+
+    if (this.cursorElement && this.cursorElement.parentElement) {
+      this.cursorElement.parentElement.removeChild(this.cursorElement);
+      this.cursorElement = null;
     }
 
     this.handleHoverEnd();
