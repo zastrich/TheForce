@@ -6,7 +6,7 @@ export function useHandTracker(config?: HandTrackerConfig) {
   const isTracking = ref(false);
   let tracker: HandTracker | null = null;
 
-  const initialize = async (videoElement: HTMLVideoElement, customConfig?: HandTrackerConfig) => {
+  const initialize = async (customConfig?: HandTrackerConfig) => {
     if (isTracking.value) return;
 
     const finalConfig = { ...config, ...customConfig };
@@ -16,7 +16,7 @@ export function useHandTracker(config?: HandTrackerConfig) {
       handLandmarks.value = results.multiHandLandmarks || [];
     });
 
-    await tracker.start(videoElement);
+    await tracker.start();
     isTracking.value = true;
   };
 
@@ -29,9 +29,9 @@ export function useHandTracker(config?: HandTrackerConfig) {
     handLandmarks.value = [];
   };
 
-  const restart = async (videoElement: HTMLVideoElement, customConfig?: HandTrackerConfig) => {
+  const restart = async (customConfig?: HandTrackerConfig) => {
     await stop();
-    await initialize(videoElement, customConfig);
+    await initialize(customConfig);
   };
 
   // Only register onUnmounted if we're in a Vue component context
@@ -71,4 +71,4 @@ export const Hoverable = {
       class: ['force-hoverable', props.class]
     }, slots.default?.());
   }
-}; 
+};
