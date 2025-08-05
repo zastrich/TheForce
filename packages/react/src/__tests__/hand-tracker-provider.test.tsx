@@ -1,31 +1,24 @@
-import React, { useRef, useEffect } from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import { HandTrackerProvider, useHandTracker } from '../hand-tracker-provider';
 
 // Mock the core HandTracker
 jest.mock('@theforce/core', () => ({
   HandTracker: jest.fn().mockImplementation(() => ({
     onResults: jest.fn(),
-    start: jest.fn(),
-    stop: jest.fn(),
+    start: jest.fn().mockResolvedValue(undefined),
+    stop: jest.fn().mockResolvedValue(undefined),
   })),
 }));
 
 const TestComponent: React.FC = () => {
   const { handLandmarks, isTracking, initialize, stop } = useHandTracker();
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (videoRef.current) {
-      initialize(videoRef.current);
-    }
-  }, [initialize]);
 
   return (
     <div>
-      <video ref={videoRef} />
       <div data-testid="landmarks-count">{handLandmarks.length}</div>
       <div data-testid="tracking-status">{isTracking ? 'tracking' : 'stopped'}</div>
+      <button onClick={() => initialize()}>Initialize</button>
       <button onClick={() => stop()}>Stop</button>
     </div>
   );
@@ -63,9 +56,13 @@ describe('useHandTracker', () => {
       return <div>Test</div>;
     };
 
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
     expect(() => {
       render(<TestComponentWithoutProvider />);
     }).toThrow('useHandTracker must be used within a HandTrackerProvider');
+
+    spy.mockRestore();
   });
 
   it('should provide hand tracker functionality', async () => {
@@ -75,8 +72,11 @@ describe('useHandTracker', () => {
       </HandTrackerProvider>
     );
 
-    await waitFor(() => {
-      expect(screen.getByTestId('tracking-status')).toHaveTextContent('tracking');
+    const initializeButton = screen.getByText('Initialize');
+    await act(async () => {
+      fireEvent.click(initializeButton);
     });
+
+    expect(screen.getByTestId('tracking-status')).toHaveTextContent('tracking');
   });
 }); 
