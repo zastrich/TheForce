@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import type { HandTrackerConfig } from '@theforce/core';
 import { HandTrackerService } from './hand-tracker.service';
 
@@ -13,15 +13,11 @@ export class HandTrackerComponent implements OnInit {
   @Input() options: HandTrackerConfig = {};
 
   constructor(
-    private handTrackerService: HandTrackerService,
-    private elementRef: ElementRef
+    private handTrackerService: HandTrackerService
   ) {}
 
   async ngOnInit(): Promise<void> {
-    const videoElement = this.elementRef.nativeElement.querySelector('video');
-    await this.handTrackerService.initialize({
-      ...this.options,
-      videoElement
-    });
+    
+    await this.handTrackerService.initialize(this.options);
   }
 } 

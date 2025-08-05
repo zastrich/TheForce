@@ -39,7 +39,7 @@ yarn add @theforce/angular @theforce/core
 
     ```typescript
     // app.component.ts
-    import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+    import { Component, OnInit, OnDestroy } from '@angular/core';
     import { HandTrackerService } from '@theforce/angular';
     import { HandTrackerConfig } from '@theforce/core'; // Import HandTrackerConfig
 
@@ -48,7 +48,6 @@ yarn add @theforce/angular @theforce/core
       template: `
         <div>
           <h1>Hand Tracking Demo (Angular)</h1>
-          <video #videoElement autoplay muted playsinline style="width: 100%; max-width: 640px;"></video>
           <button (click)="startTracking()">Start Tracking</button>
           <button (click)="stopTracking()">Stop Tracking</button>
 
@@ -60,13 +59,16 @@ yarn add @theforce/angular @theforce/core
       styleUrls: ['./app.component.css']
     })
     export class AppComponent implements OnInit, OnDestroy {
-      @ViewChild('videoElement', { static: true }) videoElement!: ElementRef<HTMLVideoElement>;
-      stream: MediaStream | null = null;
-
       constructor(private handTrackerService: HandTrackerService) {}
 
       ngOnInit() {
-        this.initializeCamera();
+        const config: HandTrackerConfig = {
+          hoverDelay: 1000,
+          sensitivityX: 1.5,
+          sensitivityY: 1.5,
+          debug: true, // Set to true to display the camera feed in the bottom right corner for debugging
+        };
+        this.handTrackerService.initialize(config);
         this.handTrackerService.handLandmarks$.subscribe(landmarks => {
           // Process hand landmarks
           console.log('Hand landmarks:', landmarks);
@@ -74,40 +76,15 @@ yarn add @theforce/angular @theforce/core
       }
 
       ngOnDestroy() {
-        this.cleanup();
-      }
-
-      async initializeCamera() {
-        try {
-          this.stream = await navigator.mediaDevices.getUserMedia({
-            video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }
-          });
-          this.videoElement.nativeElement.srcObject = this.stream;
-        } catch (error) {
-          console.error('Error accessing camera:', error);
-          alert('Unable to access camera. Please check permissions.');
-        }
+        this.handTrackerService.stop();
       }
 
       async startTracking() {
-        if (this.videoElement.nativeElement && this.stream) {
-          const config: HandTrackerConfig = {
-            hoverDelay: 2000, // Time in milliseconds to hover before triggering a click
-            sensitivityX: 1.5, // Multiplier for horizontal cursor movement sensitivity
-            sensitivityY: 1.5, // Multiplier for vertical cursor movement sensitivity
-          };
-          await this.handTrackerService.start(this.videoElement.nativeElement, config);
-        }
+        await this.handTrackerService.start();
       }
 
       async stopTracking() {
         await this.handTrackerService.stop();
-      }
-
-      private cleanup() {
-        if (this.stream) {
-          this.stream.getTracks().forEach(track => track.stop());
-        }
       }
     }
     ```
@@ -121,9 +98,9 @@ This service provides methods to control the hand tracking functionality and obs
 | `handLandmarks$`  | `Observable<any[]>`                      | An observable that emits detected hand landmarks. |
 | `tracking`      | `boolean`                                | Indicates if hand tracking is currently active. |
 | `initialize(config?: HandTrackerConfig)` | `Promise<void>`                          | Initializes the hand tracker with optional configuration. |
-| `start(videoElement: HTMLVideoElement, config?: HandTrackerConfig)` | `Promise<void>`                          | Starts hand tracking using the provided video element and optional configuration. |
+| `start(config?: HandTrackerConfig)` | `Promise<void>`                          | Starts hand tracking with optional configuration. |
 | `stop()`        | `Promise<void>`                          | Stops hand tracking and cleans up resources. |
-| `restart(videoElement: HTMLVideoElement, config?: HandTrackerConfig)` | `Promise<void>`                          | Stops, then restarts hand tracking. |
+| `restart(config?: HandTrackerConfig)` | `Promise<void>`                          | Stops, then restarts hand tracking. |
 
 ## `HoverableDirective`
 
@@ -137,7 +114,7 @@ This directive can be applied to any HTML element to make it interactive with th
 
 ## Configuration Options
 
-The `initialize` and `start` methods of `HandTrackerService` accept an optional `HandTrackerConfig` object. These options are passed directly to the underlying `@theforce/core` `HandTracker` instance. See `@theforce/core` documentation for available options like `hoverDelay`, `sensitivityX`, `sensitivityY`, `cursorImageUrl`, `actionImageUrl`.
+The `initialize` and `start` methods of `HandTrackerService` accept an optional `HandTrackerConfig` object. These options are passed directly to the underlying `@theforce/core` `HandTracker` instance. See `@theforce/core` documentation for available options like `hoverDelay`, `sensitivityX`, `sensitivityY`, `cursorImageUrl`, `cursorLandmarkIndex`, and `debug`.
 
 ## Styling Hoverable Elements
 
