@@ -59,7 +59,6 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
-
   themeConfig: {
     // Replace with your project's social card
     image: 'img/theforce.png',
@@ -77,6 +76,7 @@ const config: Config = {
           label: 'Documentation',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/roadmap', label: 'Roadmap', position: 'left'},
         {
           href: 'https://github.com/zastrich/TheForce',
           label: 'GitHub',
@@ -132,6 +132,10 @@ const config: Config = {
         {
           title: 'More',
           items: [
+            {
+              label: 'Roadmap',
+              to: '/roadmap',
+            },
             {
               label: 'Zastrich website',
               href: 'https://code200.com.br',

@@ -7,6 +7,8 @@ tags: [update, camera, core, frameworks, integration]
 
 We are super excited to announce a new update for TheForce, bringing significant advances that will revolutionize how you interact with our technology!
 
+<!-- truncate -->
+
 The main novelty of this update is the **integration of camera loading functionality directly into the `core` package**. This means that the base of TheForce now handles video capture natively and optimally, making the experience much more fluid and efficient.
 
 ### What does this mean for you?

@@ -9,6 +9,8 @@ Greetings, Padawans and Jedi Masters of the web!
 
 We are thrilled to announce the official launch of **TheForce**, a powerful and intuitive hand tracking library designed to bring the magic of gesture control to your web applications. Just as the Force guides the actions of a Jedi, our library empowers your users to interact with digital interfaces using the most natural tool: their hands.
 
+<!-- truncate -->
+
 Built upon the robust foundation of Google's MediaPipe, TheForce offers real-time, high-accuracy hand tracking, transforming subtle movements into precise commands. Whether you're building immersive games, accessible interfaces, or innovative kiosks, TheForce provides the tools to create truly engaging experiences.
 
 ### What can you do with TheForce?
