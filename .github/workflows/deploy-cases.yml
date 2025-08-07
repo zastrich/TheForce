@@ -24,8 +24,8 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to S3
-        run: aws s3 sync build/ s3://theforce-cases.code200.com.br --delete --acl public-read
-        working-directory: ./cases
+        run: aws s3 sync cases/ s3://theforce-cases.code200.com.br --delete --acl public-read
+        working-directory: ./
       
       - name: Ensure bucket is configured as static site
         run: |
