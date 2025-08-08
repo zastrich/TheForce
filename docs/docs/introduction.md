@@ -37,6 +37,17 @@ In an increasingly interactive digital world, traditional input methods like mou
 
 TheForce utilizes your device's camera to capture video input. MediaPipe then processes this video stream to identify hand landmarks (e.g., fingertips, knuckles). These landmarks are then translated into screen coordinates, allowing TheForce to simulate mouse movements and clicks.
 
+### Important Note on Mediapipe Dependency:
+
+For TheForce to function correctly, you **must** include the Mediapipe library from a CDN in your project's `index.html` (or equivalent entry point). This is a runtime dependency required by `@theforce/core`.
+
+Please add the following script tags to your HTML file's `<head>` or before your main application script:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+```
+
 ## See it in Action
 
 Check out this video demonstrating TheForce in a live project:

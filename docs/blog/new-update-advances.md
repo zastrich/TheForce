@@ -20,3 +20,14 @@ The main novelty of this update is the **integration of camera loading functiona
 This update is a giant step towards making TheForce even more powerful and easy to use. We believe this change will bring more agility to development and a superior experience for end-users.
 
 Stay tuned for more news and tutorials on how to make the most of these new features!
+
+### Important Note on Mediapipe Dependency:
+
+For TheForce to function correctly, you **must** include the Mediapipe library from a CDN in your project's `index.html` (or equivalent entry point). This is a runtime dependency required by `@theforce/core`.
+
+Please add the following script tags to your HTML file's `<head>` or before your main application script:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+```

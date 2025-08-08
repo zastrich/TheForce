@@ -15,6 +15,17 @@ npm install @theforce/angular @theforce/core
 yarn add @theforce/angular @theforce/core
 ```
 
+### Important Note on Mediapipe Dependency:
+
+For TheForce to function correctly, you **must** include the Mediapipe library from a CDN in your project's `index.html` (or equivalent entry point). This is a runtime dependency required by `@theforce/core`.
+
+Please add the following script tags to your HTML file's `<head>` or before your main application script:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+```
+
 ## Quick Start
 
 1.  **Import `HandTrackerModule`**: Add `HandTrackerModule` to your `AppModule` or any feature module where you intend to use the hand tracking service or directive.
