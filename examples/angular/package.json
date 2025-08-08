@@ -1,6 +1,6 @@
 {
   "name": "theforce-angular-example",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Angular example for TheForce hand tracking",
   "scripts": {
     "ng": "ng",
@@ -37,4 +37,4 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.1.3"
   }
-} 
+}

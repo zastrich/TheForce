@@ -214,8 +214,11 @@
         </div>
     </div>
 
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
     <script type="module">
-        import { HandTracker } from '../../packages/core/dist/index.mjs';
+        import { HandTracker } from 'https://cdn.jsdelivr.net/npm/@theforce/core/dist/index.mjs';
 
         let tracker = null;
         let isTracking = false;
@@ -257,7 +260,7 @@
                 hoverDelay: 1000,
                 sensitivityX: 1.5,
                 sensitivityY: 1.5,
-                cursorImageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcgMkwxNyAxMkw3IDIyVjJaIiBmaWxsPSIjNGNhZjUwIi8+Cjwvc3ZnPgo='
+                debug: false
             });
 
             await tracker.initialize();

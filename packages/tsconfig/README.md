@@ -14,8 +14,8 @@ yarn add @theforce/tsconfig
 
 To use these shared configurations in your project's `tsconfig.json`, extend from the appropriate base configuration. There are typically two main configurations:
 
--   `base.json`: For general TypeScript projects.
--   `react-library.json` (example): For React-specific libraries.
+- `base.json`: For general TypeScript projects.
+- `react-library.json` (example): For React-specific libraries.
 
 ### Example: Using `base.json`
 
@@ -28,13 +28,8 @@ To use these shared configurations in your project's `tsconfig.json`, extend fro
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
 ```
 
@@ -50,23 +45,17 @@ If there were a `react-library.json`:
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
 }
 ```
 
 ## Available Configurations
 
--   `base.json`: A foundational TypeScript configuration with common settings suitable for most projects within the monorepo.
+- `base.json`: A foundational TypeScript configuration with common settings suitable for most projects within the monorepo.
 
 ## Benefits
 
--   **Consistency**: Ensures all packages use the same fundamental TypeScript settings.
--   **Maintainability**: Changes to core TypeScript rules can be made in one place.
--   **Reduced Duplication**: Avoids repeating `compilerOptions` in every `tsconfig.json`.
+- **Consistency**: Ensures all packages use the same fundamental TypeScript settings.
+- **Maintainability**: Changes to core TypeScript rules can be made in one place.
+- **Reduced Duplication**: Avoids repeating `compilerOptions` in every `tsconfig.json`.

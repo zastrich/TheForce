@@ -15,24 +15,35 @@ Built upon the robust foundation of Google's MediaPipe, TheForce offers real-tim
 
 ### What can you do with TheForce?
 
-*   **Virtual Mouse Control:** Navigate web pages, click buttons, and interact with elements using only your hand.
-*   **Custom Gestures:** Define and implement your own unique hand gestures to trigger specific actions within your application.
-*   **Enhanced Accessibility:** Provide alternative input methods for users who may find traditional mouse and keyboard interactions challenging.
+- **Virtual Mouse Control:** Navigate web pages, click buttons, and interact with elements using only your hand.
+- **Custom Gestures:** Define and implement your own unique hand gestures to trigger specific actions within your application.
+- **Enhanced Accessibility:** Provide alternative input methods for users who may find traditional mouse and keyboard interactions challenging.
 
 ### Get Started Today!
 
 Ready to harness the power of TheForce in your projects? Dive into our comprehensive documentation:
 
-*   **Official Documentation:** [https://theforce.code200.com.br](https://theforce.code200.com.br)
-*   **GitHub Repository:** [https://github.com/zastrich/TheForce](https://github.com/zastrich/TheForce)
+- **Official Documentation:** [https://theforce.code200.com.br](https://theforce.code200.com.br)
+- **GitHub Repository:** [https://github.com/zastrich/TheForce](https://github.com/zastrich/TheForce)
 
 Install our packages via npm:
 
-*   **Core Package:** `npm install @theforce/core`
-*   **React Integration:** `npm install @theforce/react`
-*   **Vue Integration:** `npm install @theforce/vue`
-*   **Angular Integration:** `npm install @theforce/angular`
+- **Core Package:** `npm install @theforce/core`
+- **React Integration:** `npm install @theforce/react`
+- **Vue Integration:** `npm install @theforce/vue`
+- **Angular Integration:** `npm install @theforce/angular`
 
 We believe that TheForce will revolutionize how users interact with web applications, making digital experiences more intuitive, accessible, and fun. Join us on this exciting journey!
 
 May the Force be with your development!
+
+### Important Note on Mediapipe Dependency:
+
+For TheForce to function correctly, you **must** include the Mediapipe library from a CDN in your project's `index.html` (or equivalent entry point). This is a runtime dependency required by `@theforce/core`.
+
+Please add the following script tags to your HTML file's `<head>` or before your main application script:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+```

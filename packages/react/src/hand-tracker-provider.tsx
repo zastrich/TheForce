@@ -1,5 +1,12 @@
-import React, { createContext, useContext, useRef, useCallback, useState, useEffect } from 'react';
-import { HandTracker, HandTrackerConfig } from '@theforce/core';
+import React, {
+  createContext,
+  useContext,
+  useRef,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
+import { HandTracker, HandTrackerConfig } from "@theforce/core";
 
 interface HandTrackerContextType {
   handLandmarks: any[];
@@ -19,27 +26,34 @@ interface HandTrackerProviderProps {
 export const HandTrackerProvider: React.FC<HandTrackerProviderProps> = ({
   children,
   config,
-  debug
+  debug,
 }) => {
   const [handLandmarks, setHandLandmarks] = useState<any[]>([]);
   const [isTracking, setIsTracking] = useState(false);
   const trackerRef = useRef<HandTracker | null>(null);
 
-  const initialize = useCallback(async (
-    customConfig?: HandTrackerConfig
-  ) => {
-    if (isTracking) return;
+  const initialize = useCallback(
+    async (customConfig?: HandTrackerConfig) => {
+      if (isTracking) return;
 
-    const finalConfig = { ...config, ...customConfig, debug };
-    trackerRef.current = new HandTracker(finalConfig);
+      // Add the waiting loop back
+      while (!(window as any).Hands) {
+        console.log("Waiting for MediaPipe Hands to load...");
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
 
-    trackerRef.current.onResults((results) => {
-      setHandLandmarks(results.multiHandLandmarks || []);
-    });
+      const finalConfig = { ...config, ...customConfig, debug };
+      trackerRef.current = new HandTracker(finalConfig);
 
-    await trackerRef.current.start();
-    setIsTracking(true);
-  }, [config, isTracking, debug]);
+      trackerRef.current.onResults((results) => {
+        setHandLandmarks(results.multiHandLandmarks || []);
+      });
+
+      await trackerRef.current.start();
+      setIsTracking(true);
+    },
+    [config, isTracking, debug],
+  );
 
   const stop = useCallback(async () => {
     if (!trackerRef.current || !isTracking) return;
@@ -75,7 +89,7 @@ export const HandTrackerProvider: React.FC<HandTrackerProviderProps> = ({
 export const useHandTracker = (): HandTrackerContextType => {
   const context = useContext(HandTrackerContext);
   if (!context) {
-    throw new Error('useHandTracker must be used within a HandTrackerProvider');
+    throw new Error("useHandTracker must be used within a HandTrackerProvider");
   }
   return context;
 };
@@ -83,10 +97,6 @@ export const useHandTracker = (): HandTrackerContextType => {
 export const Hoverable: React.FC<{
   children: React.ReactNode;
   className?: string;
-}> = ({ children, className = '' }) => {
-  return (
-    <div className={`force-hoverable ${className}`}>
-      {children}
-    </div>
-  );
+}> = ({ children, className = "" }) => {
+  return <div className={`force-hoverable ${className}`}>{children}</div>;
 };

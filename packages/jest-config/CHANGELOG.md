@@ -1,5 +1,11 @@
 # @theforce/jest-config
 
+## 1.0.0
+
+### Major Changes
+
+- Mediapipe from CDN - Peerdependecies strategy
+
 ## 0.2.0
 
 ### Minor Changes

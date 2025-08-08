@@ -9,6 +9,20 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      external: [
+        '@mediapipe/hands',
+        '@mediapipe/camera_utils',
+        '@mediapipe/control_utils'
+      ],
+      output: {
+        globals: {
+          '@mediapipe/hands': 'Hands',
+          '@mediapipe/camera_utils': 'CameraUtils',
+          '@mediapipe/control_utils': 'ControlUtils'
+        }
+      }
+    }
   }
-}) 
+})

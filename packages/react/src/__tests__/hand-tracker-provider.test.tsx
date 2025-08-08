@@ -1,9 +1,9 @@
-import React from 'react';
-import { render, screen, act, fireEvent } from '@testing-library/react';
-import { HandTrackerProvider, useHandTracker } from '../hand-tracker-provider';
+import React from "react";
+import { render, screen, act, fireEvent } from "@testing-library/react";
+import { HandTrackerProvider, useHandTracker } from "../hand-tracker-provider";
 
 // Mock the core HandTracker
-jest.mock('@theforce/core', () => ({
+jest.mock("@theforce/core", () => ({
   HandTracker: jest.fn().mockImplementation(() => ({
     onResults: jest.fn(),
     start: jest.fn().mockResolvedValue(undefined),
@@ -17,66 +17,68 @@ const TestComponent: React.FC = () => {
   return (
     <div>
       <div data-testid="landmarks-count">{handLandmarks.length}</div>
-      <div data-testid="tracking-status">{isTracking ? 'tracking' : 'stopped'}</div>
+      <div data-testid="tracking-status">
+        {isTracking ? "tracking" : "stopped"}
+      </div>
       <button onClick={() => initialize()}>Initialize</button>
       <button onClick={() => stop()}>Stop</button>
     </div>
   );
 };
 
-describe('HandTrackerProvider', () => {
-  it('should provide hand tracker context', () => {
+describe("HandTrackerProvider", () => {
+  it("should provide hand tracker context", () => {
     render(
       <HandTrackerProvider>
         <TestComponent />
-      </HandTrackerProvider>
+      </HandTrackerProvider>,
     );
 
-    expect(screen.getByTestId('landmarks-count')).toBeInTheDocument();
-    expect(screen.getByTestId('tracking-status')).toBeInTheDocument();
+    expect(screen.getByTestId("landmarks-count")).toBeInTheDocument();
+    expect(screen.getByTestId("tracking-status")).toBeInTheDocument();
   });
 
-  it('should initialize with custom config', () => {
+  it("should initialize with custom config", () => {
     const config = { hoverDelay: 2000 };
-    
+
     render(
       <HandTrackerProvider config={config}>
         <TestComponent />
-      </HandTrackerProvider>
+      </HandTrackerProvider>,
     );
 
-    expect(screen.getByTestId('landmarks-count')).toBeInTheDocument();
+    expect(screen.getByTestId("landmarks-count")).toBeInTheDocument();
   });
 });
 
-describe('useHandTracker', () => {
-  it('should throw error when used outside provider', () => {
+describe("useHandTracker", () => {
+  it("should throw error when used outside provider", () => {
     const TestComponentWithoutProvider = () => {
       useHandTracker();
       return <div>Test</div>;
     };
 
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
 
     expect(() => {
       render(<TestComponentWithoutProvider />);
-    }).toThrow('useHandTracker must be used within a HandTrackerProvider');
+    }).toThrow("useHandTracker must be used within a HandTrackerProvider");
 
     spy.mockRestore();
   });
 
-  it('should provide hand tracker functionality', async () => {
+  it("should provide hand tracker functionality", async () => {
     render(
       <HandTrackerProvider>
         <TestComponent />
-      </HandTrackerProvider>
+      </HandTrackerProvider>,
     );
 
-    const initializeButton = screen.getByText('Initialize');
+    const initializeButton = screen.getByText("Initialize");
     await act(async () => {
       fireEvent.click(initializeButton);
     });
 
-    expect(screen.getByTestId('tracking-status')).toHaveTextContent('tracking');
+    expect(screen.getByTestId("tracking-status")).toHaveTextContent("tracking");
   });
-}); 
+});

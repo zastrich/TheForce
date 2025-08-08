@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HandTrackerService } from '@theforce/angular';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { HandTrackerService } from "@theforce/angular";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements OnInit, OnDestroy {
   isTracking = false;
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
       sensitivityY: 1.5,
       debug: true,
     });
-    this.handTrackerService.handLandmarks$.subscribe(landmarks => {
+    this.handTrackerService.handLandmarks$.subscribe((landmarks) => {
       this.handLandmarks = landmarks;
     });
   }
@@ -40,9 +40,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   handleClick(event: MouseEvent) {
     const element = event.target as HTMLElement;
-    element.classList.add('clicked');
+    element.classList.add("clicked");
     setTimeout(() => {
-      element.classList.remove('clicked');
+      element.classList.remove("clicked");
     }, 3000);
   }
-} 
+}

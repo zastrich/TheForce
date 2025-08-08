@@ -44,11 +44,11 @@ export interface HandTrackerConfig {
 
 export interface HandTrackerResults {
   multiHandLandmarks: any[][];
-  multiHandedness: any[];
+  multiHandedness?: any[];
 }
 
 export interface HandLandmark {
   x: number;
   y: number;
   z: number;
-} 
+}

@@ -35,16 +35,16 @@ npm install @theforce/angular  # For Angular applications
 ### Core Package
 
 ```javascript
-import { HandTracker } from '@theforce/core';
+import { HandTracker } from "@theforce/core";
 
 // Initialize the hand tracker
 const tracker = new HandTracker({
   hoverDelay: 2000,
   sensitivityX: 1.5,
   sensitivityY: 1.5,
-  cursorImageUrl: '/custom-cursor.png',
+  cursorImageUrl: "/custom-cursor.png",
   cursorLandmarkIndex: 9, // Use middle finger base as cursor point
-  debug: true // Show camera feed for debugging
+  debug: true, // Show camera feed for debugging
 });
 
 // Start tracking (camera will be initialized automatically)
@@ -64,8 +64,8 @@ tracker.onResults((results) => {
 ### React Integration
 
 ```jsx
-import React, { useEffect } from 'react';
-import { HandTrackerProvider, useHandTracker } from '@theforce/react';
+import React, { useEffect } from "react";
+import { HandTrackerProvider, useHandTracker } from "@theforce/react";
 
 function App() {
   const config = {
@@ -86,7 +86,9 @@ function HandTrackingDemo() {
 
   useEffect(() => {
     initialize();
-    return () => { stop(); };
+    return () => {
+      stop();
+    };
   }, [initialize, stop]);
 
   return (
@@ -102,8 +104,8 @@ function HandTrackingDemo() {
 
 ```vue
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
-import { useHandTracker, Hoverable } from '@theforce/vue';
+import { onMounted, onUnmounted } from "vue";
+import { useHandTracker, Hoverable } from "@theforce/vue";
 
 const config = {
   hoverDelay: 1000,
@@ -135,27 +137,27 @@ onUnmounted(() => {
 
 ```typescript
 // app.module.ts
-import { NgModule } from '@angular/core';
-import { HandTrackerModule } from '@theforce/angular';
+import { NgModule } from "@angular/core";
+import { HandTrackerModule } from "@theforce/angular";
 
 @NgModule({
   imports: [HandTrackerModule],
 })
-export class AppModule { }
+export class AppModule {}
 
 // app.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HandTrackerService } from '@theforce/angular';
-import { HandTrackerConfig } from '@theforce/core';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { HandTrackerService } from "@theforce/angular";
+import { HandTrackerConfig } from "@theforce/core";
 
 @Component({
-  selector: 'app-hand-tracking',
+  selector: "app-hand-tracking",
   template: `
     <div>
       <div appHoverable>Hover with your hand!</div>
       <!-- Your UI components here -->
     </div>
-  `
+  `,
 })
 export class HandTrackingComponent implements OnInit, OnDestroy {
   constructor(private handTracker: HandTrackerService) {}
@@ -168,7 +170,7 @@ export class HandTrackingComponent implements OnInit, OnDestroy {
       debug: true,
     };
     this.handTracker.initialize(config);
-    this.handTracker.handLandmarks$.subscribe(landmarks => {
+    this.handTracker.handLandmarks$.subscribe((landmarks) => {
       // Process hand landmarks
     });
     this.handTracker.start();
@@ -214,14 +216,14 @@ npm start
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `hoverDelay` | `number` | `2000` | Time in milliseconds to hover before triggering click |
-| `sensitivityX` | `number` | `1` | Multiplier for horizontal cursor movement sensitivity |
-| `sensitivityY` | `number` | `1` | Multiplier for vertical cursor movement sensitivity |
-| `cursorImageUrl` | `string` | `-` | URL for custom cursor image |
-| `cursorLandmarkIndex` | `number` | `9` | The index of the landmark to use for cursor positioning (e.g., 0 for wrist, 8 for index finger tip, 9 for middle finger base). Defaults to 9 (middle finger base) for a more central hand tracking experience. |
-| `debug` | `boolean` | `false` | If true, the camera feed will be displayed in the bottom right corner for debugging purposes. |
+| Option                | Type      | Default | Description                                                                                                                                                                                                    |
+| --------------------- | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hoverDelay`          | `number`  | `2000`  | Time in milliseconds to hover before triggering click                                                                                                                                                          |
+| `sensitivityX`        | `number`  | `1`     | Multiplier for horizontal cursor movement sensitivity                                                                                                                                                          |
+| `sensitivityY`        | `number`  | `1`     | Multiplier for vertical cursor movement sensitivity                                                                                                                                                            |
+| `cursorImageUrl`      | `string`  | `-`     | URL for custom cursor image                                                                                                                                                                                    |
+| `cursorLandmarkIndex` | `number`  | `9`     | The index of the landmark to use for cursor positioning (e.g., 0 for wrist, 8 for index finger tip, 9 for middle finger base). Defaults to 9 (middle finger base) for a more central hand tracking experience. |
+| `debug`               | `boolean` | `false` | If true, the camera feed will be displayed in the bottom right corner for debugging purposes.                                                                                                                  |
 
 ## CSS Classes
 
@@ -234,11 +236,13 @@ The library adds the following CSS classes that you can style:
 ## Browser Support
 
 This library requires browsers that support:
+
 - WebRTC (for camera access)
 - MediaPipe
 - Modern JavaScript features
 
 **Minimum browser versions:**
+
 - Chrome 88+
 - Firefox 85+
 - Safari 14+
@@ -313,17 +317,20 @@ We welcome contributions! Here's how you can help:
 ### Setting Up Development Environment
 
 1. **Fork and clone the repository**
+
    ```bash
    git clone https://github.com/your-username/TheForce.git
    cd TheForce
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Build the project**
+
    ```bash
    npm run build
    ```
@@ -336,6 +343,7 @@ We welcome contributions! Here's how you can help:
 ### Development Workflow
 
 1. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -346,12 +354,14 @@ We welcome contributions! Here's how you can help:
    - Update documentation as needed
 
 3. **Test your changes**
+
    ```bash
    npm run build
    npm test
    ```
 
 4. **Commit your changes**
+
    ```bash
    git add .
    git commit -m "feat: add your feature description"

@@ -1,6 +1,6 @@
 {
   "name": "theforce-react-example",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "React example for TheForce hand tracking",
   "main": "index.js",
   "scripts": {
@@ -20,4 +20,4 @@
     "@vitejs/plugin-react": "^4.0.3",
     "vite": "^4.4.5"
   }
-} 
+}

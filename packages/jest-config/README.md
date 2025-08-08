@@ -19,14 +19,14 @@ To use this shared Jest preset in your project's `jest.config.js` (or `jest.conf
 
 module.exports = {
   // Extend the shared preset
-  preset: '@theforce/jest-config',
-  
+  preset: "@theforce/jest-config",
+
   // Add any package-specific configurations here
   // For example, if you need to transform specific files:
   // transform: {
   //   '^.+\\.(ts|tsx)$': 'ts-jest',
   // },
-  
+
   // Or if you have specific test environment setup files:
   // setupFilesAfterEnv: ['./src/setupTests.ts'],
 };
