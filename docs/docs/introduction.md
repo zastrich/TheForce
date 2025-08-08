@@ -54,6 +54,15 @@ Check out this video demonstrating TheForce in a live project:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/qoimrV3c0v4" title="TheForce Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+
+## Cases
+Here are some example projects using TheForce:
+
+| Preview | Description | URL |
+|-|-|-|
+| [<img src="/img/cases/theforce-cases.code200.com.br_lovable-showcase-example_.jpg" alt="Lovable Showcase Preview" />](https://theforce-cases.code200.com.br/lovable-showcase-example/) | Lovable Showcase Example. Build in Lovable.ai in 30 minutes. | [Access here](https://theforce-cases.code200.com.br/lovable-showcase-example/)|
+|-| ➡️ YOUR PROJECT HERE ⬅️ |-|
+
 ## Get Started
 
 Ready to integrate hand tracking into your project? Use your preferred method:

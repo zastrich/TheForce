@@ -9,10 +9,15 @@ Here are the features we are currently planning to implement:
 
 - ⌛ **Inclusion of 2 cursors at the same time:** Allow for dual-hand control and interaction.
 - ⌛ **Drag and drop function for items on the screen:** Enable users to pick up and move elements using hand gestures.
+- ⌛ **Sequence of actions in same gesture:** Allow users to perform multiple actions with a single gesture.
 
 ## Completed Milestones
 
 Here are the key milestones we have successfully completed:
+
+### Version 2.0.0 (2025-08-08)
+
+- ✅ **All packages:** Mediapipe dependency CDN is required to be included in the `index.html` file.
 
 ### Version 1.4.0 (2025-08-06)
 
