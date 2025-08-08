@@ -21,47 +21,48 @@ yarn add @theforce/angular @theforce/core
 
     ```typescript
     // app.module.ts
-    import { NgModule } from '@angular/core';
-    import { BrowserModule } from '@angular/platform-browser';
-    import { HandTrackerModule } from '@theforce/angular';
-    import { AppComponent } from './app.component';
+    import { NgModule } from "@angular/core";
+    import { BrowserModule } from "@angular/platform-browser";
+    import { HandTrackerModule } from "@theforce/angular";
+    import { AppComponent } from "./app.component";
 
     @NgModule({
-      declarations: [
-        AppComponent
-      ],
+      declarations: [AppComponent],
       imports: [
         BrowserModule,
-        HandTrackerModule // Add HandTrackerModule here
+        HandTrackerModule, // Add HandTrackerModule here
       ],
       providers: [],
-      bootstrap: [AppComponent]
+      bootstrap: [AppComponent],
     })
-    export class AppModule { }
+    export class AppModule {}
     ```
 
 2.  **Use `HandTrackerService` in your component**: Inject `HandTrackerService` into your component and use its methods to control hand tracking.
 
     ```typescript
     // app.component.ts
-    import { Component, OnInit, OnDestroy } from '@angular/core';
-    import { HandTrackerService } from '@theforce/angular';
-    import { HandTrackerConfig } from '@theforce/core'; // Import HandTrackerConfig
+    import { Component, OnInit, OnDestroy } from "@angular/core";
+    import { HandTrackerService } from "@theforce/angular";
+    import { HandTrackerConfig } from "@theforce/core"; // Import HandTrackerConfig
 
     @Component({
-      selector: 'app-root',
+      selector: "app-root",
       template: `
         <div>
           <h1>Hand Tracking Demo (Angular)</h1>
           <button (click)="startTracking()">Start Tracking</button>
           <button (click)="stopTracking()">Stop Tracking</button>
 
-          <div appHoverable style="padding: 20px; border: 1px solid gray; margin-top: 20px;">
+          <div
+            appHoverable
+            style="padding: 20px; border: 1px solid gray; margin-top: 20px;"
+          >
             Hover over me with your hand!
           </div>
         </div>
       `,
-      styleUrls: ['./app.component.css']
+      styleUrls: ["./app.component.css"],
     })
     export class AppComponent implements OnInit, OnDestroy {
       constructor(private handTrackerService: HandTrackerService) {}
@@ -74,9 +75,9 @@ yarn add @theforce/angular @theforce/core
           debug: true, // Set to true to display the camera feed in the bottom right corner for debugging
         };
         this.handTrackerService.initialize(config);
-        this.handTrackerService.handLandmarks$.subscribe(landmarks => {
+        this.handTrackerService.handLandmarks$.subscribe((landmarks) => {
           // Process hand landmarks
-          console.log('Hand landmarks:', landmarks);
+          console.log("Hand landmarks:", landmarks);
         });
       }
 
@@ -98,14 +99,14 @@ yarn add @theforce/angular @theforce/core
 
 This service provides methods to control the hand tracking functionality and observables to subscribe to hand tracking results.
 
-| Property/Method | Type                                     | Description                                           |
-| --------------- | ---------------------------------------- | ----------------------------------------------------- |
-| `handLandmarks$`  | `Observable<any[]>`                      | An observable that emits detected hand landmarks. |
-| `tracking`      | `boolean`                                | Indicates if hand tracking is currently active. |
-| `initialize(config?: HandTrackerConfig)` | `Promise<void>`                          | Initializes the hand tracker with optional configuration. |
-| `start(config?: HandTrackerConfig)` | `Promise<void>`                          | Starts hand tracking with optional configuration. |
-| `stop()`        | `Promise<void>`                          | Stops hand tracking and cleans up resources. |
-| `restart(config?: HandTrackerConfig)` | `Promise<void>`                          | Stops, then restarts hand tracking. |
+| Property/Method                          | Type                | Description                                               |
+| ---------------------------------------- | ------------------- | --------------------------------------------------------- |
+| `handLandmarks$`                         | `Observable<any[]>` | An observable that emits detected hand landmarks.         |
+| `tracking`                               | `boolean`           | Indicates if hand tracking is currently active.           |
+| `initialize(config?: HandTrackerConfig)` | `Promise<void>`     | Initializes the hand tracker with optional configuration. |
+| `start(config?: HandTrackerConfig)`      | `Promise<void>`     | Starts hand tracking with optional configuration.         |
+| `stop()`                                 | `Promise<void>`     | Stops hand tracking and cleans up resources.              |
+| `restart(config?: HandTrackerConfig)`    | `Promise<void>`     | Stops, then restarts hand tracking.                       |
 
 ## `HoverableDirective`
 
@@ -125,7 +126,7 @@ The `initialize` and `start` methods of `HandTrackerService` accept an optional 
 
 Elements with the `appHoverable` directive will have the following CSS classes applied by the core library, which you can style:
 
--   `.force-hoverable`: Always present on elements with `appHoverable` directive.
--   `.force-hover`: Added when the virtual cursor is hovering over the element.
+- `.force-hoverable`: Always present on elements with `appHoverable` directive.
+- `.force-hover`: Added when the virtual cursor is hovering over the element.
 
 For the virtual cursor itself, you can style the `.force-cursor` and `.force-loading` classes. Refer to the `@theforce/core` documentation for more details.

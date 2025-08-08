@@ -1,10 +1,10 @@
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef } from "@angular/core";
 
 @Directive({
-  selector: '[forceHoverable]'
+  selector: "[forceHoverable]",
 })
 export class HoverableDirective {
   constructor(private elementRef: ElementRef) {
-    this.elementRef.nativeElement.classList.add('force-hoverable');
+    this.elementRef.nativeElement.classList.add("force-hoverable");
   }
-} 
+}

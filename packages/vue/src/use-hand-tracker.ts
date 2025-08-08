@@ -1,5 +1,5 @@
-import { ref, onUnmounted, h, getCurrentInstance } from 'vue';
-import { HandTracker, HandTrackerConfig } from '@theforce/core';
+import { ref, onUnmounted, h, getCurrentInstance } from "vue";
+import { HandTracker, HandTrackerConfig } from "@theforce/core";
 
 export function useHandTracker(config?: HandTrackerConfig) {
   const handLandmarks = ref<any[]>([]);
@@ -37,7 +37,7 @@ export function useHandTracker(config?: HandTrackerConfig) {
   // Only register onUnmounted if we're in a Vue component context
   // Check if we're in a component setup context
   try {
-    if (typeof onUnmounted === 'function' && getCurrentInstance()) {
+    if (typeof onUnmounted === "function" && getCurrentInstance()) {
       onUnmounted(() => {
         if (tracker) {
           tracker.stop();
@@ -59,16 +59,22 @@ export function useHandTracker(config?: HandTrackerConfig) {
 
 // Vue component for hoverable elements
 export const Hoverable = {
-  name: 'Hoverable',
+  name: "Hoverable",
   props: {
     class: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   setup(props: any, { slots }: any) {
-    return () => h('div', {
-      class: ['force-hoverable', props.class]
-    }, slots.default?.());
-  }
+    return () =>
+      h(
+        "div",
+        {
+          class: ["force-hoverable", props.class],
+          "data-hoverable": "true", // Add data-hoverable attribute
+        },
+        slots.default?.(),
+      );
+  },
 };

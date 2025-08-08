@@ -1,6 +1,6 @@
 {
   "name": "@theforce/jest-config",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "private": true,
   "main": "jest-preset.js",
   "dependencies": {

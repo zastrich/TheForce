@@ -1,9 +1,9 @@
-import { Injectable, NgZone, OnDestroy } from '@angular/core';
-import { HandTracker, HandTrackerConfig } from '@theforce/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, NgZone, OnDestroy } from "@angular/core";
+import { HandTracker, HandTrackerConfig } from "@theforce/core";
+import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class HandTrackerService implements OnDestroy {
   private handTracker: HandTracker | null = null;
@@ -22,7 +22,7 @@ export class HandTrackerService implements OnDestroy {
 
   public async initialize(config: HandTrackerConfig = {}): Promise<void> {
     this.handTracker = new HandTracker(config);
-    
+
     this.handTracker.onResults((results) => {
       this.ngZone.run(() => {
         this.handLandmarksSubject.next(results.multiHandLandmarks || []);
@@ -38,7 +38,7 @@ export class HandTrackerService implements OnDestroy {
     if (!this.handTracker) {
       await this.initialize(config);
     }
-    
+
     if (this.handTracker) {
       await this.handTracker.start();
       this.isTracking = true;

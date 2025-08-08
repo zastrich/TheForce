@@ -1,16 +1,15 @@
-import { Hands } from '@mediapipe/hands';
-import { Camera } from '@mediapipe/camera_utils';
-import { HandTrackerConfig, HandTrackerResults } from './types';
-import { getCursorScreenCoordinates } from './utils';
+import { HandTrackerConfig, HandTrackerResults } from "./types";
+import { getCursorScreenCoordinates } from "./utils";
 
 export class HandTracker {
-  private hands: Hands;
-  private camera: Camera | null = null;
+  private hands: any; // Changed to any
+  private camera: any | null = null; // Changed to any
   private videoElement: HTMLVideoElement;
   private canvasElement: HTMLCanvasElement;
   private cursorElement: HTMLElement | null = null;
   private config: HandTrackerConfig;
-  private onResultsCallback: ((results: HandTrackerResults) => void) | null = null;
+  private onResultsCallback: ((results: HandTrackerResults) => void) | null =
+    null;
   private hoverTimeout: NodeJS.Timeout | null = null;
   private hoveredElement: HTMLElement | null = null;
   private isInitialized = false;
@@ -21,41 +20,41 @@ export class HandTracker {
       sensitivityX: 1,
       sensitivityY: 1,
       cursorLandmarkIndex: 9, // Default to middle finger base
-      ...config
+      ...config,
     };
 
-    this.hands = new Hands({
-      locateFile: (file) => {
+    this.hands = new (window as any).Hands({
+      locateFile: (file: string) => {
         return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-      }
+      },
     });
 
-    this.videoElement = document.createElement('video');
+    this.videoElement = document.createElement("video");
     this.videoElement.autoplay = true;
     this.videoElement.muted = true;
     this.videoElement.playsInline = true;
-    this.videoElement.style.display = 'none'; // Hidden by default
+    this.videoElement.style.display = "none"; // Hidden by default
 
-    this.canvasElement = document.createElement('canvas');
-    this.canvasElement.style.display = 'none'; // Hidden by default
+    this.canvasElement = document.createElement("canvas");
+    this.canvasElement.style.display = "none"; // Hidden by default
 
     if (this.config.debug) {
-      this.videoElement.style.display = 'block';
-      this.videoElement.style.position = 'fixed';
-      this.videoElement.style.bottom = '10px';
-      this.videoElement.style.right = '10px';
-      this.videoElement.style.width = '200px';
-      this.videoElement.style.height = '150px';
-      this.videoElement.style.zIndex = '9999';
+      this.videoElement.style.display = "block";
+      this.videoElement.style.position = "fixed";
+      this.videoElement.style.bottom = "10px";
+      this.videoElement.style.right = "10px";
+      this.videoElement.style.width = "200px";
+      this.videoElement.style.height = "150px";
+      this.videoElement.style.zIndex = "9999";
       document.body.appendChild(this.videoElement);
 
-      this.canvasElement.style.display = 'block';
-      this.canvasElement.style.position = 'fixed';
-      this.canvasElement.style.bottom = '10px';
-      this.canvasElement.style.right = '10px';
-      this.canvasElement.style.width = '200px';
-      this.canvasElement.style.height = '150px';
-      this.canvasElement.style.zIndex = '10000';
+      this.canvasElement.style.display = "block";
+      this.canvasElement.style.position = "fixed";
+      this.canvasElement.style.bottom = "10px";
+      this.canvasElement.style.right = "10px";
+      this.canvasElement.style.width = "200px";
+      this.canvasElement.style.height = "150px";
+      this.canvasElement.style.zIndex = "10000";
       document.body.appendChild(this.canvasElement);
     }
 
@@ -67,15 +66,15 @@ export class HandTracker {
       maxNumHands: 1,
       modelComplexity: 1,
       minDetectionConfidence: 0.9,
-      minTrackingConfidence: 0.9
+      minTrackingConfidence: 0.9,
     });
 
-    this.hands.onResults((results) => {
+    this.hands.onResults((results: any) => {
       this.handleResults(results);
     });
   }
 
-  private handleResults(results: any): void {
+  private handleResults(results: HandTrackerResults): void {
     if (this.onResultsCallback) {
       this.onResultsCallback(results);
     }
@@ -103,7 +102,7 @@ export class HandTracker {
 
       this.cursorElement.style.left = `${x}px`;
       this.cursorElement.style.top = `${y}px`;
-      this.cursorElement.style.display = 'block';
+      this.cursorElement.style.display = "block";
     }
   }
 
@@ -116,7 +115,9 @@ export class HandTracker {
     const { x, y } = this._getCursorScreenCoordinates(cursorLandmark);
 
     const element = document.elementFromPoint(x, y) as HTMLElement;
-    const hoverableElement = element?.closest('[data-hoverable]') as HTMLElement;
+    const hoverableElement = element?.closest(
+      "[data-hoverable]",
+    ) as HTMLElement;
 
     if (hoverableElement && hoverableElement !== this.hoveredElement) {
       this.handleHoverStart(hoverableElement);
@@ -127,11 +128,14 @@ export class HandTracker {
 
   private handleHoverStart(element: HTMLElement): void {
     this.hoveredElement = element;
-    element.classList.add('force-hover');
+    element.classList.add("force-hover");
 
     if (this.cursorElement) {
-      this.cursorElement.classList.add('force-loading');
-      this.cursorElement.style.setProperty('--hover-delay', `${this.config.hoverDelay || 2000}ms`);
+      this.cursorElement.classList.add("force-loading");
+      this.cursorElement.style.setProperty(
+        "--hover-delay",
+        `${this.config.hoverDelay || 2000}ms`,
+      );
     }
 
     if (this.hoverTimeout) {
@@ -145,12 +149,12 @@ export class HandTracker {
 
   private handleHoverEnd(): void {
     if (this.hoveredElement) {
-      this.hoveredElement.classList.remove('force-hover');
+      this.hoveredElement.classList.remove("force-hover");
       this.hoveredElement = null;
     }
 
     if (this.cursorElement) {
-      this.cursorElement.classList.remove('force-loading');
+      this.cursorElement.classList.remove("force-loading");
     }
 
     if (this.hoverTimeout) {
@@ -160,10 +164,10 @@ export class HandTracker {
   }
 
   private triggerClick(element: HTMLElement): void {
-    const event = new MouseEvent('click', {
+    const event = new MouseEvent("click", {
       bubbles: true,
       cancelable: true,
-      view: window
+      view: window,
     });
     element.dispatchEvent(event);
   }
@@ -172,20 +176,20 @@ export class HandTracker {
     if (this.isInitialized) return;
 
     // Create cursor element
-    this.cursorElement = document.createElement('div');
-    this.cursorElement.style.position = 'fixed';
-    this.cursorElement.style.pointerEvents = 'none';
-    this.cursorElement.style.zIndex = '9999';
-    this.cursorElement.style.display = 'none';
-    this.cursorElement.style.width = '20px';
-    this.cursorElement.style.height = '20px';
-    this.cursorElement.style.borderRadius = '50%';
-    this.cursorElement.style.backgroundColor = 'red';
-    this.cursorElement.style.opacity = '0.7';
-    this.cursorElement.style.transform = 'translate(-50%, -50%)';
-    this.cursorElement.style.transition = 'all 0.2s';
+    this.cursorElement = document.createElement("div");
+    this.cursorElement.style.position = "fixed";
+    this.cursorElement.style.pointerEvents = "none";
+    this.cursorElement.style.zIndex = "9999";
+    this.cursorElement.style.display = "none";
+    this.cursorElement.style.width = "20px";
+    this.cursorElement.style.height = "20px";
+    this.cursorElement.style.borderRadius = "50%";
+    this.cursorElement.style.backgroundColor = "red";
+    this.cursorElement.style.opacity = "0.7";
+    this.cursorElement.style.transform = "translate(-50%, -50%)";
+    this.cursorElement.style.transition = "all 0.2s";
 
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.innerHTML = `
       .force-cursor {
         position: fixed;
@@ -199,18 +203,6 @@ export class HandTracker {
         transform: translate(-50%, -50%);
         transition: transform 0.2s ease-out;
       }
-      .force-cursor.force-loading::before {
-        content: '';
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 5px solid rgba(0, 0, 255, 0.5);
-        border-top-color: blue;
-        animation: force-spin var(--hover-delay, 2s) linear forwards;
-      }
       @keyframes force-spin {
         to {
           transform: rotate(360deg);
@@ -221,8 +213,8 @@ export class HandTracker {
 
     if (this.config.cursorImageUrl) {
       this.cursorElement.style.backgroundImage = `url(${this.config.cursorImageUrl})`;
-      this.cursorElement.style.backgroundSize = 'contain';
-      this.cursorElement.style.backgroundColor = 'transparent';
+      this.cursorElement.style.backgroundSize = "contain";
+      this.cursorElement.style.backgroundColor = "transparent";
     }
 
     document.body.appendChild(this.cursorElement);
@@ -244,14 +236,14 @@ export class HandTracker {
       this.canvasElement.height = this.videoElement.videoHeight;
     }
 
-    this.camera = new Camera(this.videoElement, {
+    this.camera = new (window as any).Camera(this.videoElement, {
       onFrame: async () => {
         if (this.videoElement) {
           await this.hands.send({ image: this.videoElement });
         }
       },
       width: 640,
-      height: 480
+      height: 480,
     });
 
     await this.camera.start();
@@ -283,4 +275,4 @@ export class HandTracker {
   public onResults(callback: (results: HandTrackerResults) => void): void {
     this.onResultsCallback = callback;
   }
-} 
+}

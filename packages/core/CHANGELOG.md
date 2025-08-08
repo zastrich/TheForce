@@ -1,5 +1,11 @@
 # @theforce/core
 
+## 2.0.0
+
+### Major Changes
+
+- Mediapipe from CDN - Peerdependecies strategy
+
 ## 1.3.0
 
 ### Minor Changes

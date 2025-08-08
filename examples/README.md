@@ -30,6 +30,7 @@ examples/
 ## Browser Compatibility
 
 TheForce uses MediaPipe for hand tracking, which requires:
+
 - Chrome 88+
 - Firefox 85+
 - Safari 14+
@@ -37,4 +38,4 @@ TheForce uses MediaPipe for hand tracking, which requires:
 
 ## Camera Permissions
 
-All examples require camera access for hand tracking. Make sure to allow camera permissions when prompted by your browser. 
+All examples require camera access for hand tracking. Make sure to allow camera permissions when prompted by your browser.

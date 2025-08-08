@@ -87,6 +87,7 @@ function App() {
     hoverDelay: 1000,
     sensitivityX: 4,
     sensitivityY: 4,
+    debug: true
   };
 
   return (
